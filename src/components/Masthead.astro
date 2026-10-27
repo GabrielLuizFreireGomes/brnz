@@ -87,12 +87,20 @@ const year = new Date().getFullYear();
   }
   .tiles i {
     position: relative; overflow: hidden; border-radius: 28px;
-    background: linear-gradient(135deg, #070a2c 10%, #1b2680 60%, #2f3fc4 100%); /* taste-skill-ignore: planos azuis da identidade (destaques do Instagram) */
-    opacity: calc(0.28 + var(--t) * 0.1);
+    --a: calc(0.28 + var(--t) * 0.1);
+    background: linear-gradient(135deg, rgba(7, 10, 44, var(--a)) 10%, rgba(27, 38, 128, var(--a)) 60%, rgba(47, 63, 196, var(--a)) 100%); /* taste-skill-ignore: planos azuis da identidade (destaques do Instagram) */
   }
+  /* Rastro do cursor: o plano acende na hora e apaga devagar */
+  .tiles i::before {
+    content: ''; position: absolute; inset: 0; border-radius: inherit; opacity: 0;
+    background: linear-gradient(135deg, #4c63ff, #aeb8ff 55%, #4c63ff); /* taste-skill-ignore: plano aceso pelo cursor */
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6), 0 0 40px rgba(76, 99, 255, 0.8); /* taste-skill-ignore: brilho do plano aceso */
+    transition: opacity 2200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .tiles i.hit::before { opacity: 0.75; transition-duration: 120ms; }
   .tiles i::after {
     content: ''; position: absolute; inset: -40% -60%;
-    background: linear-gradient(105deg, transparent 40%, rgba(174, 184, 255, 0.55) 50%, transparent 60%); /* taste-skill-ignore: brilho que corre pelos planos */
+    background: linear-gradient(105deg, transparent 40%, rgba(174, 184, 255, 0.22) 50%, transparent 60%); /* taste-skill-ignore: brilho que corre pelos planos */
     transform: translateX(-60%);
   }
   .beam { position: absolute; height: 2px; width: 140%; left: -20%; background: linear-gradient(90deg, transparent, rgba(174, 184, 255, 0.9), transparent); } /* taste-skill-ignore: feixes diagonais da identidade */
@@ -104,7 +112,7 @@ const year = new Date().getFullYear();
     background: radial-gradient(closest-side, rgba(76, 99, 255, 0.45), rgba(47, 59, 144, 0.15) 55%, transparent 100%); /* taste-skill-ignore: luz que segue o cursor */
     transition: left 700ms var(--ease-out), top 700ms var(--ease-out);
   }
-  .veil { position: absolute; inset: 0; background: radial-gradient(ellipse 55% 45% at 50% 45%, rgba(4, 5, 26, 0.75), rgba(4, 5, 26, 0.2) 70%, rgba(4, 5, 26, 0.85) 100%); } /* taste-skill-ignore: escurece o centro para a marca ler */
+  .veil { position: absolute; inset: 0; background: radial-gradient(ellipse 55% 45% at 50% 45%, rgba(4, 5, 26, 0.55), rgba(4, 5, 26, 0.1) 70%, rgba(4, 5, 26, 0.7) 100%); } /* taste-skill-ignore: escurece o centro para a marca ler */
   .grain {
     position: absolute; inset: -50%; opacity: 0.16; mix-blend-mode: overlay;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
@@ -140,7 +148,7 @@ const year = new Date().getFullYear();
   .stage { position: relative; z-index: 2; display: grid; place-items: center; min-height: 0; }
   .logo-wrap {
     width: min(60vw, 860px);
-    transform: translate3d(calc(var(--mx) * 10px), calc(var(--my) * 8px), 0) scale(calc(1 - var(--p) * 0.12));
+    transform: perspective(900px) translate3d(calc(var(--mx) * 10px), calc(var(--my) * 8px), 0) rotateY(calc(var(--mx) * 14deg)) rotateX(calc(var(--my) * -10deg)) scale(calc(1 - var(--p) * 0.12));
     transition: transform 700ms var(--ease-out);
   }
   .logo-wrap :global(.hero-logo) { width: 100%; height: auto; color: #fff; filter: drop-shadow(0 0 40px rgba(76, 99, 255, 0.45)); } /* taste-skill-ignore: brilho da marca sobre a luz */
@@ -153,6 +161,7 @@ const year = new Date().getFullYear();
     transition: transform 900ms var(--ease-out);
   }
   .chip span {
+    transition: transform 500ms var(--ease-out), background-color 300ms;
     display: inline-flex; align-items: center; gap: 10px; padding: 11px 18px;
     border-radius: 999px; background: rgba(16, 21, 58, 0.45); box-shadow: inset 0 0 0 1px rgba(243, 244, 251, 0.2); /* taste-skill-ignore: chips de vidro da referência */
     backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
@@ -180,7 +189,15 @@ const year = new Date().getFullYear();
   /* ---------- Movimento ---------- */
   @media (min-width: 0px) {
     .tiles i { animation: tile-in 1100ms var(--ease-expo) backwards; animation-delay: calc(var(--n) * 18ms); }
-    .tiles i::after { animation: sheen 6.5s ease-in-out infinite; animation-delay: calc(var(--n) * 90ms + 1.2s); }
+    /* Rastro do cursor: o plano acende na hora e apaga devagar */
+  .tiles i::before {
+    content: ''; position: absolute; inset: 0; border-radius: inherit; opacity: 0;
+    background: linear-gradient(135deg, #4c63ff, #aeb8ff 55%, #4c63ff); /* taste-skill-ignore: plano aceso pelo cursor */
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6), 0 0 40px rgba(76, 99, 255, 0.8); /* taste-skill-ignore: brilho do plano aceso */
+    transition: opacity 2200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .tiles i.hit::before { opacity: 0.75; transition-duration: 120ms; }
+  .tiles i::after { animation: sheen 6.5s ease-in-out infinite; animation-delay: calc(var(--n) * 90ms + 1.2s); }
     .beam-a { animation: beam 7s ease-in-out infinite; }
     .beam-b { animation: beam 9s ease-in-out infinite reverse; }
     .chip span { animation: chip-in 1000ms var(--ease-expo) backwards, float 6s ease-in-out infinite alternate; animation-delay: calc(1100ms + var(--d) * 120ms), calc(var(--d) * -1.1s); }
@@ -235,7 +252,54 @@ const year = new Date().getFullYear();
       hero.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 2 - 1).toFixed(3));
       hero.style.setProperty('--my', ((e.clientY - r.top) / r.height * 2 - 1).toFixed(3));
     };
-    const onLeave = () => { hero.style.setProperty('--mx', '0'); hero.style.setProperty('--my', '0'); };
+    const onLeave = () => {
+      hero.style.setProperty('--mx', '0'); hero.style.setProperty('--my', '0');
+      chips.forEach((chip) => { (chip.firstElementChild as HTMLElement).style.transform = ''; });
+    };
+
+    // Planos acendem por onde o cursor passa e apagam devagar (rastro de luz)
+    const tiles = [...hero.querySelectorAll<HTMLElement>('.tiles i')];
+    const light = (tile: HTMLElement) => {
+      tile.classList.add('hit');
+      window.setTimeout(() => tile.classList.remove('hit'), 450);
+    };
+    let px = -1, py = -1, trail = 0;
+    const trace = () => {
+      trail = 0;
+      for (const tile of tiles) {
+        if (tile.offsetParent === null) continue;
+        const r = tile.getBoundingClientRect();
+        const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+        if (Math.hypot(px - cx, py - cy) < Math.max(r.width, r.height) * 0.55) light(tile);
+      }
+      // Chips magnéticos: fogem do cursor quando ele chega perto
+      chips.forEach((chip) => {
+        const span = chip.firstElementChild as HTMLElement;
+        const r = span.getBoundingClientRect();
+        const dx = r.left + r.width / 2 - px, dy = r.top + r.height / 2 - py;
+        const d = Math.hypot(dx, dy);
+        const f = d < 180 ? (180 - d) / 180 : 0;
+        span.style.transform = f ? `translate(${(dx / (d || 1)) * f * 36}px, ${(dy / (d || 1)) * f * 36}px)` : '';
+      });
+    };
+    hero.addEventListener('pointermove', (e) => {
+      if (!fine.matches || reducedMotion.matches) return;
+      px = e.clientX; py = e.clientY;
+      if (!trail) trail = requestAnimationFrame(trace);
+    });
+
+    // Sem mouse (celular), os planos acendem sozinhos em sequência
+    if (!fine.matches && !reducedMotion.matches) {
+      let k = 0;
+      const auto = window.setInterval(() => {
+        if (window.scrollY > hero.offsetHeight) return;
+        const visible = tiles.filter((t) => t.offsetParent !== null);
+        light(visible[(k * 7 + 3) % visible.length]);
+        light(visible[(k * 11 + 5) % visible.length]);
+        k++;
+      }, 420);
+      if (import.meta.hot) import.meta.hot.dispose(() => window.clearInterval(auto));
+    }
     const onScroll = () => {
       if (frame) return;
       frame = requestAnimationFrame(() => {

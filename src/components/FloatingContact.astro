@@ -6,7 +6,7 @@ import WhatsAppIcon from './WhatsAppIcon.astro';
   <WhatsAppIcon />
 </a>
 <style>
-  .floating-contact { position: fixed; z-index: 20; right: max(20px, env(safe-area-inset-right)); bottom: max(20px, env(safe-area-inset-bottom)); width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; padding: 14px; background: var(--brand); color: #fff; border-radius: 0; font-size: var(--t-small); font-weight: 600; text-decoration: none; transition: transform 280ms var(--ease-out), background-color 280ms, opacity 280ms, visibility 280ms; }
+  .floating-contact { position: fixed; z-index: 20; right: max(20px, env(safe-area-inset-right)); bottom: max(20px, env(safe-area-inset-bottom)); width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; padding: 14px; background: var(--brand); color: #fff; border-radius: 999px; font-size: var(--t-small); font-weight: 600; text-decoration: none; transition: transform 280ms var(--ease-out), background-color 280ms, opacity 280ms, visibility 280ms; }
   .floating-contact:hover { transform: translateY(-4px); background: var(--brand-hi); }
   .floating-contact:active { transform: translateY(0); }
   :global(html.js) .floating-contact[data-suppressed] { opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(10px); }

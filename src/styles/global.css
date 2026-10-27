@@ -50,7 +50,10 @@
   --gap: clamp(16px, 2vw, 28px);
   --axis: 42%;           /* a linha de coluna da revista */
   --section: clamp(88px, 9vw, 136px);
-  --radius: 0px;         /* botões retos, como blocos impressos */
+  /* Cantos arredondados, no mesmo desenho redondo da Sans Sara e do logo */
+  --radius: 999px;       /* botões e etiquetas em pílula */
+  --r-card: clamp(20px, 2vw, 32px);  /* blocos de cor e cartões */
+  --r-small: 14px;       /* campos e retratos */
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -190,3 +193,22 @@ html:not([data-motion='on']) { scroll-behavior: auto; }
 html:not([data-motion='on']) *, html:not([data-motion='on']) *::before, html:not([data-motion='on']) *::after { animation: none !important; transition: none !important; }
 html:not([data-motion='on']) .pointer-flow { display: none; }
 html:not([data-motion='on']).motion-ready [data-reveal], html:not([data-motion='on']) [data-load], html:not([data-motion='on']) [data-line], html:not([data-motion='on']) [data-tile], html:not([data-motion='on']) [data-rise], html:not([data-motion='on']) .wordmark { opacity: 1 !important; transform: none !important; }
+
+/* ---------- Arredondado: blocos de cor viram cartões soltos na página ---------- */
+.services, .builder, .closing { margin-inline: var(--margin); }
+.services { gap: 12px; }
+.services .statement, .services .rows, .builder, .closing, .facts, .person, .plan { border-radius: var(--r-card); overflow: hidden; }
+.portrait, .field input, .side { border-radius: var(--r-small); }
+.chip span { border-radius: var(--radius); }
+.compare { gap: 8px; }
+.faq { margin-inline: var(--margin); border-radius: var(--r-card); }
+.closing { margin-block: 12px; }
+.footer { border-radius: var(--r-card) var(--r-card) 0 0; }
+.table tbody tr > :first-child { border-radius: var(--r-small) 0 0 var(--r-small); }
+.table tbody tr > :last-child { border-radius: 0 var(--r-small) var(--r-small) 0; }
+.table tbody tr > .featured, .table .cta-row > :first-child { border-radius: 0; }
+.table thead .featured { border-radius: var(--r-card) var(--r-card) 0 0; }
+.table .cta-row .featured { border-radius: 0 0 var(--r-card) var(--r-card); }
+@media (max-width: 860px) {
+  .services { gap: 8px; }
+}
