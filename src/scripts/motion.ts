@@ -2,6 +2,7 @@ import type Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 import './pointer-flow';
 import { reducedMotion as reduced } from './motion-preference';
+import { setSectorScroll } from './sectors';
 
 const fine = matchMedia('(hover: hover) and (pointer: fine)');
 let smooth: Lenis | undefined;
@@ -12,6 +13,7 @@ async function syncScroll() {
   const ticket = ++generation;
   smooth?.destroy();
   smooth = undefined;
+  setSectorScroll(null);
   document.documentElement.classList.remove('has-smooth-scroll');
   if (!fine.matches || reduced.matches || document.hidden) return;
   try {
@@ -28,6 +30,8 @@ async function syncScroll() {
       virtualScroll: ({ event }) => !event.ctrlKey && !event.metaKey,
     });
     document.documentElement.classList.add('has-smooth-scroll');
+    const lenis = smooth;
+    setSectorScroll((y) => lenis.scrollTo(y, { duration: 1.15, easing: (t) => 1 - Math.pow(1 - t, 4) }));
   } catch {
     // Falha do módulo mantém o scroll nativo e a página utilizável.
   }
@@ -41,7 +45,8 @@ void syncScroll();
 // Interrompe a inércia antes da ação nativa do teclado, sem cancelar a tecla.
 const interruptForKeyboard = (event: KeyboardEvent) => {
   if (!smooth || event.ctrlKey || event.metaKey || event.altKey) return;
-  if (!['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' ', 'Tab'].includes(event.key)) return;
+  // Setas, PageUp/PageDown e espaço ficam com a navegação por setores (sectors.ts).
+  if (!['Home', 'End', 'Tab'].includes(event.key)) return;
   const target = event.target;
   if (target instanceof HTMLElement && target.closest('input, textarea, select, [contenteditable="true"]')) return;
   smooth.scrollTo(window.scrollY, { immediate: true });

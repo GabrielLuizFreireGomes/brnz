@@ -212,3 +212,34 @@ html:not([data-motion='on']).motion-ready [data-reveal], html:not([data-motion='
 @media (max-width: 860px) {
   .services { gap: 8px; }
 }
+
+/* ---------- Setores: pontos laterais ---------- */
+.sector-dots {
+  position: fixed; z-index: 25; right: max(14px, env(safe-area-inset-right)); top: 50%; translate: 0 -50%;
+  display: grid; gap: 4px;
+}
+.sector-dots a { position: relative; display: grid; place-items: center; width: 28px; height: 28px; }
+.sector-dots a::before {
+  content: ''; width: 7px; height: 7px; border-radius: 999px; background: rgba(243, 244, 251, 0.35);
+  transition: height 350ms var(--ease-out), background-color 250ms;
+}
+.sector-dots a[aria-current]::before { height: 22px; background: var(--brand-pale); }
+.sector-dots[data-tone='light'] a::before { background: rgba(12, 16, 48, 0.3); }
+.sector-dots[data-tone='light'] a[aria-current]::before { background: var(--brand); }
+.sector-dots span {
+  position: absolute; right: 34px; padding: 6px 12px; border-radius: 999px; white-space: nowrap;
+  background: var(--on-dark); color: var(--navy); font-size: 0.8125rem; font-weight: 600;
+  opacity: 0; translate: 6px 0; pointer-events: none; transition: opacity 200ms, translate 250ms var(--ease-out);
+}
+.sector-dots a:hover span, .sector-dots a:focus-visible span { opacity: 1; translate: 0 0; }
+@media (max-width: 900px), (hover: none) { .sector-dots { display: none; } }
+
+/* ---------- Rolagem: o topo recua, cada setor entra subindo e crescendo ---------- */
+@supports (animation-timeline: view()) {
+  @media (min-width: 0px) {
+    .hero .stage, .hero .opening { animation: hero-out linear both; animation-timeline: scroll(root); animation-range: 0 90svh; }
+    main > section, body > footer { animation: sector-in linear both; animation-timeline: view(); animation-range: entry 0% entry 45%; }
+  }
+}
+@keyframes hero-out { to { opacity: 0; transform: translateY(-14vh) scale(0.9); filter: blur(8px); } }
+@keyframes sector-in { from { opacity: 0.15; transform: translateY(12vh) scale(0.94); } to { opacity: 1; transform: none; } }

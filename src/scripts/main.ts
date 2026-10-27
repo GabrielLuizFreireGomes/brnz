@@ -1,5 +1,6 @@
 import './motion';
 import './floating-contact';
+import './sectors';
 
 // Entradas ao rolar: títulos, imagens e textos têm ritmos diferentes.
 const reveals = document.querySelectorAll<HTMLElement>('[data-reveal], [data-rise]');
