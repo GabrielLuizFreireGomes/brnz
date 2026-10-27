@@ -1,0 +1,43 @@
+---
+// Biblioteca visual da BRNZ, desenhada uma vez e reaproveitada com <use>:
+// ondas de linhas e a torção (o "design ." da série).
+
+type WaveOpts = { lines: number; w: number; h: number; amp: number; freq: number; twist: number; spread: number };
+
+const r = (n: number) => Math.round(n * 10) / 10;
+
+function waves({ lines, w, h, amp, freq, twist, spread }: WaveOpts) {
+  const steps = 44;
+  let d = '';
+  for (let i = 0; i < lines; i++) {
+    const t = i / (lines - 1);
+    const base = h * (0.5 - spread / 2 + spread * t);
+    for (let s = 0; s <= steps; s++) {
+      const u = s / steps;
+      const x = u * w;
+      const env = 0.35 + 0.65 * Math.sin(Math.PI * u);
+      const y =
+        base +
+        amp * env * Math.sin(u * freq * Math.PI * 2 + t * twist) +
+        amp * 0.45 * Math.sin(u * 3.3 + t * 6.2);
+      d += `${s === 0 ? 'M' : 'L'}${r(x)} ${r(y)}`;
+    }
+  }
+  return d;
+}
+
+const flow = waves({ lines: 42, w: 1600, h: 1000, amp: 120, freq: 1.1, twist: 2.4, spread: 0.9 });
+const twist = waves({ lines: 54, w: 1000, h: 1250, amp: 260, freq: 0.75, twist: 5.6, spread: 0.55 });
+---
+<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+  <defs>
+    <symbol id="art-waves" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+      <path d={flow} fill="none" stroke="currentColor" stroke-width="1.1" vector-effect="non-scaling-stroke" />
+    </symbol>
+
+    <symbol id="art-twist" viewBox="0 0 1000 1250" preserveAspectRatio="xMidYMid slice">
+      <path d={twist} fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke" />
+    </symbol>
+
+  </defs>
+</svg>

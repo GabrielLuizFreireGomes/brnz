@@ -1,0 +1,30 @@
+---
+import { faqs } from '../data/site';
+---
+<section class="faq wrap" id="duvidas" aria-labelledby="duvidas-title">
+  <h2 id="duvidas-title" class="q head" data-reveal>Dúvidas comuns</h2>
+  <dl>
+    {faqs.map((f) => (
+      <div class="pair" data-reveal="lift">
+        <dt class="q">{f.q}</dt>
+        <dd class="a">{f.a}</dd>
+      </div>
+    ))}
+  </dl>
+</section>
+
+<style>
+  .faq { padding-block: var(--section); background: var(--paper-2); }
+  dl { display: grid; gap: 56px; margin-top: 64px; }
+  .pair { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); align-items: baseline; }
+  .q { grid-column: 1 / span 6; font-size: var(--t-sub); font-weight: 500; line-height: 1.1; letter-spacing: -0.03em; }
+  .head { color: var(--ink-soft); }
+  .a { grid-column: 7 / span 6; max-width: 40ch; font-size: var(--t-body); line-height: 1.55; }
+
+  @media (max-width: 900px) {
+    dl { gap: 56px; margin-top: 48px; }
+    .pair { display: block; }
+    .q { font-size: var(--t-sub); }
+    .a { margin-top: 12px; }
+  }
+</style>

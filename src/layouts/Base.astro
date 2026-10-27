@@ -1,0 +1,52 @@
+---
+import '../styles/global.css';
+import ArtDefs from '../components/art/ArtDefs.astro';
+import fontLatin from '@fontsource-variable/inter-tight/files/inter-tight-latin-wght-normal.woff2?url';
+import fontBrand from '../fonts/sans-sara.woff2?url';
+
+interface Props { title: string; description: string }
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const socialImage = new URL(`${base}og-brnz.png`, Astro.site);
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="preload" href={fontLatin} as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href={fontBrand} as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#07080f" />
+    <meta name="color-scheme" content="dark" />
+    <!-- A página já é escura: extensões como o Dark Reader não devem repintar as cores da marca. -->
+    <meta name="darkreader-lock" />
+    <link rel="icon" href={`${base}favicon.ico?v=3`} sizes="16x16 32x32 48x48" />
+    <link rel="icon" href={`${base}favicon.svg?v=3`} type="image/svg+xml" sizes="any" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="brnz, estúdio criativo: design, vídeo, foto, site e automação num time só." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script is:inline define:vars={{ previewMotion: import.meta.env.DEV }}>
+      document.documentElement.classList.add('js');
+      document.documentElement.dataset.motion = previewMotion || !matchMedia('(prefers-reduced-motion: reduce)').matches ? 'on' : 'off';
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+    <ArtDefs />
+    <slot />
+    <script>
+      import '../scripts/main';
+    </script>
+  </body>
+</html>

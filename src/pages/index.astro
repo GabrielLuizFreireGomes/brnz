@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+import Masthead from '../components/Masthead.astro';
+import Intro from '../components/Intro.astro';
+import Services from '../components/Services.astro';
+import Process from '../components/Process.astro';
+import Plans from '../components/Plans.astro';
+import Builder from '../components/Builder.astro';
+import Team from '../components/Team.astro';
+import Faq from '../components/Faq.astro';
+import Cta from '../components/Cta.astro';
+import Footer from '../components/Footer.astro';
+import FloatingContact from '../components/FloatingContact.astro';
+---
+<Base
+  title="brnz · Design, vídeo, foto, site e automação num time só"
+  description="Estúdio criativo que cuida da sua marca inteira: identidade visual, posts, vídeos, fotos, landing pages e automações, com um time só. Orçamento pelo WhatsApp."
+>
+  <Masthead />
+  <main id="conteudo" tabindex="-1">
+    <Intro />
+    <Services />
+    <Process />
+    <Plans />
+    <Builder />
+    <Team />
+    <Faq />
+    <Cta />
+  </main>
+  <Footer />
+  <FloatingContact />
+</Base>

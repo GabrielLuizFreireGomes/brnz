@@ -1,0 +1,133 @@
+---
+import { plans, planRows, separateEstimate, wa } from '../data/site';
+import Arrow from './Arrow.astro';
+const ask = (p: (typeof plans)[number]) => wa(`Olá, brnz! Quero saber mais sobre o pacote ${p.name}.`);
+---
+<section class="plans wrap" id="pacotes" aria-labelledby="pacotes-title">
+  <table class="table" data-reveal>
+    <caption class="sr-only">Pacotes da brnz: o que cada um inclui</caption>
+    <thead>
+      <tr>
+        <th scope="col" class="corner"><h2 id="pacotes-title">Pacotes para começar</h2></th>
+        {plans.map((p) => (
+          <th scope="col" class:list={['head', { featured: p.featured }]}>
+            <span class="name">{p.name}</span>
+            <span class="price">{p.price}</span>
+            <span class="period">{p.period}</span>
+          </th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {planRows.map((row, r) => (
+        <tr>
+          <th scope="row">{row}</th>
+          {plans.map((p) => <td class:list={{ featured: p.featured, none: p.cells[r] === 'Não incluso' }}>{p.cells[r]}</td>)}
+        </tr>
+      ))}
+      <tr class="notes-row">
+        <th scope="row">Observação</th>
+        {plans.map((p) => <td class:list={{ featured: p.featured }}>{p.note ?? '—'}</td>)}
+      </tr>
+      <tr class="cta-row">
+        <td></td>
+        {plans.map((p) => (
+          <td class:list={{ featured: p.featured }}>
+            <a class:list={['btn', { 'btn--light': p.featured }]} href={ask(p)} target="_blank" rel="noopener">Quero o {p.name} <Arrow /></a>
+          </td>
+        ))}
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="stack">
+    <h2 class="stack-title">Pacotes para começar</h2>
+    <p class="swipe-hint" aria-hidden="true">Deslize para comparar <span>→</span></p>
+    <div class="cards" role="list">
+      {plans.map((p) => {
+        const included = planRows.slice(2).map((row, r) => ({ row, value: p.cells[r + 2] })).filter((x) => x.value !== 'Não incluso');
+        const missing = planRows.slice(2).filter((_, r) => p.cells[r + 2] === 'Não incluso');
+        return (
+          <article class:list={['plan', { featured: p.featured }]} role="listitem">
+            {p.featured && <p class="tag">Mais escolhido</p>}
+            <h3 class="plan-name">{p.name}</h3>
+            <p class="plan-price">{p.price} <small>{p.period}</small></p>
+            <p class="plan-fit">Para {p.cells[0].charAt(0).toLowerCase() + p.cells[0].slice(1)}.</p>
+            <ul class="incl">
+              {included.map((x) => <li><span>{x.row}</span><b>{x.value}</b></li>)}
+            </ul>
+            {missing.length > 0 && <p class="miss">Não inclui: {missing.join(', ').toLowerCase()}.</p>}
+            {p.note && <p class="plan-note">{p.note}</p>}
+            <a class:list={['btn', { 'btn--light': p.featured }]} href={ask(p)} target="_blank" rel="noopener">Quero o {p.name} <Arrow /></a>
+          </article>
+        );
+      })}
+    </div>
+  </div>
+  <p class="note" data-reveal>Contratando separado, o escopo do Completo passaria de {separateEstimate} por mês. Os valores são pontos de partida: o orçamento final depende do tamanho do negócio.</p>
+</section>
+
+<style>
+  .plans { padding-block: var(--section) clamp(48px, 5vw, 80px); }
+  .table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: var(--t-body); }
+  .table th, .table td { padding: 20px 20px; text-align: left; vertical-align: top; line-height: 1.3; }
+  .table .corner { width: 34%; vertical-align: bottom; padding-left: 0; }
+  .corner h2 { font-size: var(--t-head); line-height: 0.95; letter-spacing: -0.045em; max-width: 9ch; }
+  .head { padding-top: 32px; vertical-align: bottom; }
+  .name { display: block; font-size: var(--t-sub); font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
+  .price { display: block; margin-top: 14px; font-size: var(--t-sub); font-weight: 400; letter-spacing: -0.03em; line-height: 1; }
+  .period { display: block; margin-top: 6px; font-size: var(--t-small); font-weight: 500; color: var(--ink-soft); }
+  .featured .period { color: var(--on-dark-soft); }
+  .notes-row td, .notes-row th { font-size: var(--t-small); }
+  tbody th { font-weight: 500; color: var(--ink-soft); }
+  tbody tr:nth-child(odd):not(.cta-row) { background: var(--paper-2); }
+  .none { color: var(--ink-soft); }
+  .featured { background: var(--brand); color: #fff; }
+  tbody tr:nth-child(odd) .featured { background: #36429b; }
+  .featured.none { color: var(--on-dark-soft); }
+  .cta-row td { padding-block: 28px 32px; }
+  .cta-row .btn { width: 100%; justify-content: space-between; }
+  .note { max-width: 52ch; margin-top: 40px; margin-left: 34%; padding-left: 20px; font-size: var(--t-small); color: var(--ink-soft); }
+
+  .stack { display: none; }
+
+  @media (max-width: 900px) {
+    .table { display: none; }
+    .stack { display: block; }
+    .stack-title { font-size: var(--t-head-sm); line-height: 0.95; }
+    .swipe-hint { margin-top: 12px; font-size: var(--t-small); color: var(--ink-soft); }
+    .swipe-hint span { display: inline-block; animation: nudge-x 1.6s ease-in-out infinite; }
+    /* Cartões lado a lado com encaixe: o próximo aparece na borda */
+    .cards {
+      display: grid; grid-auto-flow: column; grid-auto-columns: min(84%, 360px); gap: 12px;
+      margin: 24px calc(var(--margin) * -1) 0; padding: 4px var(--margin) 8px;
+      align-items: start; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--margin);
+      scrollbar-width: none;
+    }
+    .cards::-webkit-scrollbar { display: none; }
+    .plan {
+      scroll-snap-align: start; display: flex; flex-direction: column;
+      padding: 24px 20px 20px; border-radius: 24px; background: var(--paper-2);
+    }
+    .plan.featured { background: var(--brand); color: #fff; }
+    .tag { align-self: flex-start; margin-bottom: 14px; padding: 4px 10px; border-radius: 999px; background: var(--brand-pale); color: var(--navy); font-size: 0.8125rem; font-weight: 600; }
+    .plan-name { font-family: var(--font-brand); font-size: var(--t-sub); font-weight: 400; letter-spacing: 0.01em; }
+    .plan-price { margin-top: 10px; font-size: 2.25rem; font-weight: 600; letter-spacing: -0.035em; line-height: 1; }
+    .plan-price small { font-size: var(--t-small); font-weight: 500; letter-spacing: 0; color: var(--ink-soft); }
+    .featured .plan-price small { color: var(--on-dark-soft); }
+    .plan-fit { margin-top: 10px; font-size: var(--t-small); color: var(--ink-soft); }
+    .featured .plan-fit { color: var(--on-dark-soft); }
+    .incl { display: grid; margin: 18px 0 14px; }
+    .incl li { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; font-size: var(--t-small); box-shadow: inset 0 -1px 0 rgba(174, 184, 255, 0.12); } /* taste-skill-ignore: divisória leve entre itens de lista em cartão de preço */
+    .incl span { color: var(--ink-soft); }
+    .featured .incl span { color: var(--on-dark-soft); }
+    .incl b { font-weight: 600; text-align: right; }
+    .miss { font-size: 0.8125rem; color: var(--ink-soft); }
+    .featured .miss { color: var(--on-dark-soft); }
+    .plan-note { margin-top: 8px; font-size: 0.8125rem; }
+    .plan > :nth-last-child(2) { margin-bottom: 20px; }
+    .plan .btn { width: 100%; justify-content: space-between; border-radius: 999px; }
+    .note { margin-left: 0; padding-left: 0; margin-top: 24px; }
+  }
+  @keyframes nudge-x { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
+</style>

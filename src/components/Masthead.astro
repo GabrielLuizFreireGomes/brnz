@@ -1,0 +1,263 @@
+---
+import { whatsappUrl, instagramUrl, instagramHandle } from '../data/site';
+import Arrow from './Arrow.astro';
+import BrnzLogo from './BrnzLogo.astro';
+// Cada chip é alguém que o cliente teria que contratar separado. Eles flutuam em volta da marca
+// e, ao rolar, se juntam no centro: tudo junto, num time só.
+const chips = [
+  { label: 'Designer', x: 10, y: 14, mx: 0, my: 0, z: 1.4, d: 0 },
+  { label: 'Editor de vídeo', x: 72, y: 8, mx: 50, my: 8, z: 0.8, d: 1 },
+  { label: 'Fotógrafo', x: 3, y: 62, mx: 2, my: 80, z: 0.9, d: 2 },
+  { label: 'Dev do site', x: 80, y: 66, mx: 56, my: 88, z: 1.3, d: 3 },
+  { label: 'Social media', x: 24, y: 88, mx: 0, my: 0, z: 0.7, d: 4 },
+  { label: '+ 4 prazos diferentes', x: 58, y: 92, mx: 0, my: 0, z: 1.1, d: 5 },
+];
+// Mosaico de planos azuis arredondados, como o destaque "Identidade Visual" do Instagram.
+const tiles = Array.from({ length: 48 }, (_, i) => ({ i, tone: (i * 7) % 5 }));
+const year = new Date().getFullYear();
+---
+<section class="hero on-dark" id="inicio" aria-labelledby="hero-title" data-hero>
+  <div class="field" aria-hidden="true">
+    <div class="tiles">{tiles.map((t) => <i style={`--n:${t.i};--t:${t.tone}`}></i>)}</div>
+    <span class="beam beam-a"></span>
+    <span class="beam beam-b"></span>
+    <span class="spot"></span>
+    <span class="veil"></span>
+    <span class="grain"></span>
+  </div>
+
+  <header class="bar wrap">
+    <a href="#inicio" class="mark" aria-label="brnz, início"><BrnzLogo /></a>
+    <p class="about">Estúdio criativo / Design, vídeo e tecnologia / Brasil</p>
+    <nav aria-label="Principal">
+      <ul>
+        <li class="hide-md"><a href="#servicos">Serviços</a></li>
+        <li class="hide-md"><a href="#pacotes">Pacotes</a></li>
+        <li class="hide-md"><a href="#time">Time</a></li>
+        <li><a class="pill pill--ghost" href={whatsappUrl} target="_blank" rel="noopener">Orçamento</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="stage wrap">
+    <div class="logo-wrap">
+      <BrnzLogo class="hero-logo" draw />
+    </div>
+    <ul class="chips" aria-label="Quem você deixa de contratar separado">
+      {chips.map((c) => (
+        <li class="chip" style={`--x:${c.x}%;--y:${c.y}%;--mx-pos:${c.mx}%;--my-pos:${c.my}%;--z:${c.z};--d:${c.d}`}><span>{c.label}</span></li>
+      ))}
+    </ul>
+  </div>
+
+  <div class="opening wrap">
+    <h1 id="hero-title" class="title lines">
+      <span class="line"><span data-line style="--i:0">Tudo junto,</span></span>
+      <span class="line"><span data-line style="--i:1">num time só.</span></span>
+    </h1>
+    <div class="foot" data-load style="--i:0">
+      <p>Design, vídeo, foto, site e automação feitos pelo mesmo time. <span>Uma conversa no lugar de cinco fornecedores.</span></p>
+      <a class="pill" href={whatsappUrl} target="_blank" rel="noopener">Pedir orçamento <Arrow /></a>
+    </div>
+  </div>
+
+  <div class="corners wrap" data-load style="--i:2">
+    <a href={instagramUrl} target="_blank" rel="noopener">{instagramHandle}</a>
+    <a href="#servicos" class="down">Role para ver <span aria-hidden="true">↓</span></a>
+    <span>{year}</span>
+  </div>
+</section>
+
+<style>
+  .hero {
+    --mx: 0; --my: 0; --p: 0;
+    position: relative; isolation: isolate; overflow: clip;
+    min-height: max(680px, 100svh);
+    display: grid; grid-template-rows: auto 1fr auto auto;
+    background: #04051a; color: var(--on-dark);
+  }
+
+  /* ---------- Campo: planos azuis, feixes de luz, foco no cursor ---------- */
+  .field { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+  .tiles {
+    position: absolute; left: -25%; top: -35%; width: 150%; height: 170%;
+    display: grid; grid-template-columns: repeat(8, 1fr); gap: 14px;
+    transform: translate3d(calc(var(--mx) * -24px), calc(var(--my) * -18px + var(--p) * -80px), 0) rotate(-14deg) skewX(-16deg);
+    transition: transform 900ms var(--ease-out);
+  }
+  .tiles i {
+    position: relative; overflow: hidden; border-radius: 28px;
+    background: linear-gradient(135deg, #070a2c 10%, #1b2680 60%, #2f3fc4 100%); /* taste-skill-ignore: planos azuis da identidade (destaques do Instagram) */
+    opacity: calc(0.28 + var(--t) * 0.1);
+  }
+  .tiles i::after {
+    content: ''; position: absolute; inset: -40% -60%;
+    background: linear-gradient(105deg, transparent 40%, rgba(174, 184, 255, 0.55) 50%, transparent 60%); /* taste-skill-ignore: brilho que corre pelos planos */
+    transform: translateX(-60%);
+  }
+  .beam { position: absolute; height: 2px; width: 140%; left: -20%; background: linear-gradient(90deg, transparent, rgba(174, 184, 255, 0.9), transparent); } /* taste-skill-ignore: feixes diagonais da identidade */
+  .beam-a { top: 30%; rotate: -16deg; }
+  .beam-b { top: 72%; rotate: 9deg; opacity: 0.6; }
+  .spot {
+    position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%;
+    left: calc(50% + var(--mx) * 30%); top: calc(45% + var(--my) * 30%); translate: -50% -50%;
+    background: radial-gradient(closest-side, rgba(76, 99, 255, 0.45), rgba(47, 59, 144, 0.15) 55%, transparent 100%); /* taste-skill-ignore: luz que segue o cursor */
+    transition: left 700ms var(--ease-out), top 700ms var(--ease-out);
+  }
+  .veil { position: absolute; inset: 0; background: radial-gradient(ellipse 55% 45% at 50% 45%, rgba(4, 5, 26, 0.75), rgba(4, 5, 26, 0.2) 70%, rgba(4, 5, 26, 0.85) 100%); } /* taste-skill-ignore: escurece o centro para a marca ler */
+  .grain {
+    position: absolute; inset: -50%; opacity: 0.16; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+  }
+
+  /* ---------- Barra ---------- */
+  .bar { position: relative; z-index: 3; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 32px; padding-block: 20px; }
+  .mark { display: block; width: 84px; padding: 8px 0; color: var(--on-dark); }
+  .about { padding-left: 9vw; font-size: var(--t-small); font-weight: 500; color: var(--on-dark-soft); }
+  .bar ul { display: flex; align-items: center; gap: clamp(20px, 2.2vw, 32px); }
+  .bar ul a:not(.pill) {
+    display: inline-flex; align-items: center; min-height: 44px; font-size: var(--t-small); font-weight: 500;
+    text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 0.35em; text-decoration-thickness: 1.5px;
+    transition: text-decoration-color var(--t-fast) var(--ease-out);
+  }
+  .bar ul a:not(.pill):hover { text-decoration-color: currentColor; }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 22px 0 18px;
+    border-radius: 999px; background: var(--on-dark); color: var(--navy);
+    font-size: var(--t-small); font-weight: 600; text-decoration: none; white-space: nowrap;
+    transition: background-color var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
+  }
+  .pill::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--brand-hi); }
+  .pill :global(svg) { width: 15px; height: 15px; transition: transform var(--t-fast) var(--ease-out); }
+  .pill:hover { background: #fff; transform: translateY(-2px); }
+  .pill:hover :global(svg) { transform: translate(2px, -2px); }
+  .pill:active { transform: scale(0.97); }
+  .pill--ghost { min-height: 44px; background: rgba(243, 244, 251, 0.1); color: var(--on-dark); box-shadow: inset 0 0 0 1px rgba(243, 244, 251, 0.18); }
+  .pill--ghost:hover { background: rgba(243, 244, 251, 0.18); }
+
+  /* ---------- A marca no centro ---------- */
+  .stage { position: relative; z-index: 2; display: grid; place-items: center; min-height: 0; }
+  .logo-wrap {
+    width: min(60vw, 860px);
+    transform: translate3d(calc(var(--mx) * 10px), calc(var(--my) * 8px), 0) scale(calc(1 - var(--p) * 0.12));
+    transition: transform 700ms var(--ease-out);
+  }
+  .logo-wrap :global(.hero-logo) { width: 100%; height: auto; color: #fff; filter: drop-shadow(0 0 40px rgba(76, 99, 255, 0.45)); } /* taste-skill-ignore: brilho da marca sobre a luz */
+
+  /* Chips de vidro em profundidades diferentes; ao rolar, convergem para o centro */
+  .chips { position: absolute; inset: 0 var(--margin); pointer-events: none; }
+  .chip {
+    position: absolute; left: var(--x); top: var(--y);
+    transform: translate3d(calc(var(--mx) * var(--z) * 28px), calc(var(--my) * var(--z) * 22px), 0);
+    transition: transform 900ms var(--ease-out);
+  }
+  .chip span {
+    display: inline-flex; align-items: center; gap: 10px; padding: 11px 18px;
+    border-radius: 999px; background: rgba(16, 21, 58, 0.45); box-shadow: inset 0 0 0 1px rgba(243, 244, 251, 0.2); /* taste-skill-ignore: chips de vidro da referência */
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    font-size: var(--t-small); font-weight: 500; color: var(--on-dark); white-space: nowrap;
+  }
+  .chip span::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--brand-pale); box-shadow: 0 0 10px var(--brand-hi); }
+
+  .opening {
+    position: relative; z-index: 2; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px 48px;
+    padding-block: clamp(12px, 2svh, 24px) clamp(16px, 2.5svh, 28px);
+  }
+  .title { font-size: var(--t-head); line-height: 0.95; }
+  .foot { display: flex; align-items: flex-end; gap: 24px 40px; }
+  .foot p { max-width: 34ch; font-size: var(--t-body); line-height: 1.4; }
+  .foot p span { color: var(--on-dark-soft); }
+
+  .corners {
+    position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center;
+    padding-block: 12px 18px; font-size: var(--t-small); color: var(--on-dark-soft);
+  }
+  .corners a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; text-decoration: none; }
+  .corners a:hover { color: var(--on-dark); }
+  .down span { display: inline-block; }
+
+  /* ---------- Movimento ---------- */
+  @media (min-width: 0px) {
+    .tiles i { animation: tile-in 1100ms var(--ease-expo) backwards; animation-delay: calc(var(--n) * 18ms); }
+    .tiles i::after { animation: sheen 6.5s ease-in-out infinite; animation-delay: calc(var(--n) * 90ms + 1.2s); }
+    .beam-a { animation: beam 7s ease-in-out infinite; }
+    .beam-b { animation: beam 9s ease-in-out infinite reverse; }
+    .chip span { animation: chip-in 1000ms var(--ease-expo) backwards, float 6s ease-in-out infinite alternate; animation-delay: calc(1100ms + var(--d) * 120ms), calc(var(--d) * -1.1s); }
+    .down span { animation: nudge 1.8s ease-in-out infinite; }
+  }
+  @keyframes tile-in { from { opacity: 0; transform: translateY(30px) scale(0.92); } }
+  @keyframes sheen { 0%, 55% { transform: translateX(-60%); } 85%, 100% { transform: translateX(60%); } }
+  @keyframes beam { 0%, 100% { transform: translateX(-12%); opacity: 0.25; } 50% { transform: translateX(12%); opacity: 0.9; } }
+  @keyframes chip-in { from { opacity: 0; transform: scale(0.6); filter: blur(8px); } }
+  @keyframes float { from { translate: 0 -7px; } to { translate: 0 7px; } }
+  @keyframes nudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+
+  @media (max-width: 1000px) {
+    .hide-md { display: none; }
+    .about { padding-left: 0; text-align: center; }
+  }
+  @media (max-width: 900px) {
+    .opening { grid-template-columns: 1fr; }
+    .foot { flex-direction: column; align-items: stretch; gap: 20px; }
+    .foot .pill { justify-content: space-between; min-height: 52px; }
+  }
+  @media (max-width: 760px) {
+    .hero { min-height: max(620px, 100svh); }
+    .bar { grid-template-columns: 1fr auto; padding-block: 14px; }
+    .mark { width: 72px; }
+    .about { display: none; }
+    .tiles { grid-template-columns: repeat(5, 1fr); gap: 10px; left: -40%; width: 180%; }
+    .tiles i { border-radius: 18px; }
+    .tiles i:nth-child(n + 31) { display: none; }
+    .stage { padding-block: 48px; }
+    .logo-wrap { width: 76vw; }
+    .chip span { padding: 8px 12px; font-size: 0.8125rem; }
+    .chip { left: var(--mx-pos); top: var(--my-pos); }
+    .chip:nth-child(5), .chip:nth-child(6) { display: none; }
+    .title { font-size: var(--t-head-sm); }
+    .down { display: none !important; }
+  }
+</style>
+
+<script>
+  // O campo acompanha o cursor e, ao rolar, os chips se juntam no centro.
+  import { reducedMotion } from '../scripts/motion-preference';
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  if (hero) {
+    const fine = matchMedia('(hover: hover) and (pointer: fine)');
+    const stage = hero.querySelector<HTMLElement>('.stage')!;
+    const chips = [...hero.querySelectorAll<HTMLElement>('.chip')];
+    let frame = 0;
+    const onMove = (e: PointerEvent) => {
+      if (!fine.matches || reducedMotion.matches) return;
+      const r = hero.getBoundingClientRect();
+      hero.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 2 - 1).toFixed(3));
+      hero.style.setProperty('--my', ((e.clientY - r.top) / r.height * 2 - 1).toFixed(3));
+    };
+    const onLeave = () => { hero.style.setProperty('--mx', '0'); hero.style.setProperty('--my', '0'); };
+    const onScroll = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        const p = reducedMotion.matches ? 0 : Math.min(1, Math.max(0, window.scrollY / (hero.offsetHeight * 0.6)));
+        hero.style.setProperty('--p', p.toFixed(3));
+        const s = stage.getBoundingClientRect();
+        chips.forEach((chip) => {
+          // Distância do chip (sem o deslocamento atual) até o centro da marca
+          const left = chip.offsetLeft + chip.offsetWidth / 2 + (chip.offsetParent as HTMLElement).offsetLeft;
+          const top = chip.offsetTop + chip.offsetHeight / 2;
+          const dx = s.width / 2 - left;
+          const dy = s.height / 2 - top;
+          chip.style.translate = `${(dx * p * 0.85).toFixed(1)}px ${(dy * p * 0.85).toFixed(1)}px`;
+          chip.style.opacity = String(1 - p * 0.9);
+        });
+      });
+    };
+    hero.addEventListener('pointermove', onMove);
+    hero.addEventListener('pointerleave', onLeave);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    onScroll();
+  }
+</script>

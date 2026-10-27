@@ -1,0 +1,35 @@
+---
+import { whatsappUrl } from '../data/site';
+import Arrow from './Arrow.astro';
+---
+<section class="closing wrap on-light" id="contato" aria-labelledby="contact-title">
+  <h2 id="contact-title" class="lines">
+    <span class="line"><span data-rise>Chega de contratar</span></span>
+    <span class="line"><span data-rise style="--i:1">tudo separado.</span></span>
+  </h2>
+  <div class="foot">
+    <p data-reveal style="--i:2">Conta o que sua marca precisa. A resposta vem com escopo, prazo e valor, de um time só.</p>
+    <a class="btn" href={whatsappUrl} target="_blank" rel="noopener" data-reveal style="--i:3">Chamar no WhatsApp <Arrow /></a>
+  </div>
+</section>
+
+<style>
+  .closing {
+    display: flex; flex-direction: column; gap: clamp(48px, 5vw, 80px);
+    padding-block: clamp(80px, 8vw, 128px);
+    background: var(--light); color: var(--navy);
+  }
+  h2 { font-size: var(--t-display); line-height: 0.9; letter-spacing: -0.055em; white-space: nowrap; }
+  .foot { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); align-items: end; }
+  .foot p { grid-column: 1 / span 5; max-width: 34ch; font-size: var(--t-lead); line-height: 1.4; }
+  .foot .btn { grid-column: 10 / span 3; justify-self: end; min-height: 56px; }
+
+  @media (max-width: 900px) {
+    .closing { min-height: 0; gap: 56px; padding-block: 72px 40px; }
+    h2 { font-size: var(--t-head-sm); }
+    .foot { display: grid; grid-template-columns: 1fr; gap: 28px; }
+    .foot p, .foot .btn { grid-column: 1; }
+    .foot p { font-size: var(--t-body); }
+    .foot .btn { justify-self: stretch; justify-content: space-between; }
+  }
+</style>
