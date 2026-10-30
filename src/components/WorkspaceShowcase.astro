@@ -1,0 +1,172 @@
+---
+import { Image, getImage } from 'astro:assets';
+import overviewDesktop from '../assets/workspace/overview-desktop.png';
+import overviewMobile from '../assets/workspace/overview-mobile.png';
+import designDesktop from '../assets/workspace/design-desktop.png';
+import designMobile from '../assets/workspace/design-mobile.png';
+import resultsDesktop from '../assets/workspace/results-desktop.png';
+import resultsMobile from '../assets/workspace/results-mobile.png';
+const screens = await Promise.all([
+  { id: 'overview', label: 'Visão geral', summary: 'Seu time, suas entregas e o próximo passo.', position: 'center 30%', desktop: overviewDesktop, mobile: overviewMobile, alt: 'Visão do cliente no BRNZ Workspace: linha de produção e peças para aprovar.' },
+  { id: 'design', label: 'Pedidos e aprovações', summary: 'Da primeira ideia ao seu ok.', position: 'center top', desktop: designDesktop, mobile: designMobile, alt: 'Design no BRNZ Workspace: novo pedido, aprovações e histórico de entregas.' },
+  { id: 'results', label: 'Resultados do site', summary: 'Entenda como encontram sua marca.', position: 'center 55%', desktop: resultsDesktop, mobile: resultsMobile, alt: 'Busca no BRNZ Workspace com métricas demonstrativas e gráfico de cliques do Google.' },
+].map(async screen => ({ ...screen, mobileImage: await getImage({ src: screen.mobile, format: 'webp', quality: 85, width: 780 }), thumbnail: await getImage({ src: screen.desktop, format: 'webp', quality: 75, width: 240 }) })));
+---
+<div class="showcase" data-workspace-showcase role="region" aria-roledescription="carrossel" aria-label="Conheça o BRNZ Workspace">
+  <div class="viewer">
+    <div class="viewer-header">
+      <div class="screen-copy" aria-live="polite" aria-atomic="true"><h3 data-slide-title>{screens[0].label}</h3><p data-slide-summary>{screens[0].summary}</p></div>
+      <button class="expand" type="button" data-expand aria-label="Ampliar tela do Workspace"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5" /></svg><span>Ampliar</span></button>
+    </div>
+    <div class="screen-stage">
+    <ol class="screen-track" id="workspace-carousel" tabindex="0" aria-label="Telas do Workspace. Navegue com as setas.">
+      {screens.map((screen, i) => <li class="screen" role="group" aria-roledescription="slide" aria-label={`${i + 1} de ${screens.length}: ${screen.label}`} data-label={screen.label} data-summary={screen.summary} style={`--capture-position:${screen.position}`}>
+        <div class="screen-image"><picture><source media="(max-width: 760px)" srcset={screen.mobileImage.src} width={780} height={1688} /><Image src={screen.desktop} alt={screen.alt} widths={[768, 1280]} sizes="(max-width: 760px) calc(100vw - 72px), calc(100vw - 144px)" width={1280} height={900} format="webp" quality={85} loading="lazy" decoding="async" draggable="false" /></picture></div>
+      </li>)}
+    </ol>
+    <div class="image-controls" role="group" aria-label="Navegar pelas telas">
+      <button class="step previous" type="button" data-previous aria-label="Tela anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6" /></svg></button>
+      <div class="dots">{screens.map((screen, i) => <button type="button" data-slide-to={i} aria-label={`Mostrar ${screen.label}`} aria-current={i === 0 ? 'true' : undefined}><span /></button>)}</div>
+      <button class="step next" type="button" data-next aria-label="Próxima tela"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 6 6 6-6 6" /></svg></button>
+    </div>
+    </div>
+  </div>
+  <div class="thumbnails" role="group" aria-label="Escolher tela do Workspace">
+    {screens.map((screen, i) => <button type="button" data-slide-to={i} aria-label={`Mostrar ${screen.label}`} aria-current={i === 0 ? 'true' : undefined} aria-controls="workspace-carousel"><img src={screen.thumbnail.src} alt="" width="240" height="169" loading="lazy" /><span><small>0{i + 1}</small><strong>{screen.label}</strong></span></button>)}
+  </div>
+  <dialog class="screen-dialog" aria-labelledby="workspace-full-title">
+    <header><strong id="workspace-full-title" data-full-title>Visão geral</strong><button type="button" data-close-preview autofocus aria-label="Fechar tela ampliada"><span>Fechar</span><b aria-hidden="true">×</b></button></header>
+    <div class="expanded-stage">
+      <img data-full-image alt="" draggable="false" />
+      <div class="image-controls" role="group" aria-label="Navegar pelas telas ampliadas">
+        <button class="step previous" type="button" data-previous aria-label="Tela anterior ampliada"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6" /></svg></button>
+        <div class="dots">{screens.map((screen, i) => <button type="button" data-slide-to={i} aria-label={`Ampliar ${screen.label}`} aria-current={i === 0 ? 'true' : undefined}><span /></button>)}</div>
+        <button class="step next" type="button" data-next aria-label="Próxima tela ampliada"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 6 6 6-6 6" /></svg></button>
+      </div>
+    </div>
+  </dialog>
+</div>
+<style>
+  .showcase { min-width: 0; }
+  .viewer { overflow: hidden; border: 1px solid #aeb8ff44; border-radius: 22px; background: var(--paper); box-shadow: 0 16px 36px #04051a33; }
+  .viewer-header { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 20px 24px; border-bottom: 1px solid #aeb8ff26; }
+  .screen-copy h3 { font-size: var(--t-lead); font-weight: 600; line-height: 1.3; }
+  .screen-copy p { margin-top: 5px; font-size: var(--t-small); line-height: 1.45; color: var(--on-dark-soft); }
+  .expand { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; flex: none; padding: 0 12px; border: 1px solid #aeb8ff33; border-radius: 12px; background: var(--paper-2); color: var(--on-dark-soft); font: inherit; font-size: 0.8125rem; cursor: pointer; }
+  .expand svg { width: 19px; height: 19px; }
+  .expand:hover { color: white; border-color: var(--brand-pale); }
+  .screen-track { position: relative; display: flex; gap: 16px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .screen-track::-webkit-scrollbar { display: none; }
+  .screen { flex: 0 0 100%; min-width: 0; scroll-snap-align: start; scroll-snap-stop: always; }
+  .screen-image { height: clamp(330px, 39vw, 560px); overflow: hidden; cursor: zoom-in; }
+  .screen-image picture, .screen-image img { display: block; width: 100%; height: 100%; }
+  .screen-image img { object-fit: cover; object-position: var(--capture-position); }
+  .screen-stage, .expanded-stage { position: relative; }
+  .image-controls { position: absolute; inset: 0; pointer-events: none; }
+  .image-controls button { pointer-events: auto; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .step { position: absolute; top: 50%; translate: 0 -50%; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid #c4caff4d; border-radius: 50%; background: #11152bce; backdrop-filter: blur(12px); color: #eff0ff; opacity: .65; box-shadow: 0 4px 16px #0004; transition: opacity 180ms, background 180ms, transform 180ms; }
+  .previous { left: 16px; } .next { right: 16px; }
+  .step svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .screen-stage:hover .step, .expanded-stage:hover .step, .step:focus-visible { opacity: 1; }
+  .step:hover { background: var(--brand); transform: scale(1.08); }
+  .dots { position: absolute; bottom: 14px; left: 50%; translate: -50% 0; display: flex; padding: 0 4px; border: 1px solid #c4caff26; border-radius: 999px; background: #11152bbf; backdrop-filter: blur(12px); pointer-events: auto; }
+  .dots button { display: grid; place-items: center; width: 36px; height: 40px; padding: 0; border: 0; border-radius: 50%; background: transparent; }
+  .dots span { width: 7px; height: 7px; border-radius: 50%; background: #b9c0e080; transition: transform 180ms, background 180ms, box-shadow 180ms; }
+  .dots button[aria-current='true'] span { background: #e7eaff; box-shadow: 0 0 0 4px #aeb8ff20; }
+  .dots button:hover span, .dots button:focus-visible span { transform: scale(1.3); background: white; box-shadow: 0 0 0 5px #aeb8ff33; }
+  .thumbnails { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+  .thumbnails button { display: grid; grid-template-columns: 92px minmax(0, 1fr); align-items: center; gap: 14px; padding: 10px; border: 1px solid #aeb8ff26; border-radius: 16px; background: #07080f55; color: var(--on-dark-soft); font: inherit; text-align: left; cursor: pointer; transition: border-color 180ms, background-color 180ms, transform 180ms; }
+  .thumbnails button[aria-current='true'] { background: var(--brand-deep); border-color: var(--brand-pale); color: white; }
+  .thumbnails button:hover { border-color: var(--brand-pale); transform: translateY(-2px); }
+  .thumbnails img { width: 92px; height: 58px; object-fit: cover; object-position: top; border-radius: 7px; }
+  .thumbnails small { display: block; margin-bottom: 5px; font-size: 0.625rem; color: var(--brand-pale); }
+  .thumbnails strong { font-size: var(--t-small); font-weight: 500; line-height: 1.35; }
+  .screen-dialog { width: min(1400px, 96vw); max-width: 96vw; max-height: 94svh; margin: auto; padding: 0; border: 1px solid #aeb8ff55; border-radius: 20px; background: var(--paper); color: var(--on-dark); }
+  .screen-dialog::backdrop { background: #020315d9; backdrop-filter: blur(8px); }
+  .screen-dialog header { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 12px 20px; border-bottom: 1px solid #aeb8ff26; }
+  .screen-dialog header strong { font-size: var(--t-small); font-weight: 500; }
+  .screen-dialog header button { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 10px; border: 0; background: none; color: var(--on-dark-soft); font: inherit; font-size: 0.8125rem; cursor: pointer; }
+  .screen-dialog header b { font-size: 1.5rem; font-weight: 400; }
+  .expanded-stage > img { display: block; width: 100%; height: calc(90svh - 70px); object-fit: contain; touch-action: pan-y; }
+  .screen-dialog[open] { animation: preview-in 180ms var(--ease-out); }
+  @keyframes preview-in { from { opacity: 0; transform: translateY(8px); } }
+  @media (max-width: 900px) { .thumbnails button { grid-template-columns: 1fr; gap: 9px; } .thumbnails img { width: 100%; height: auto; aspect-ratio: 16 / 9; } .thumbnails small { display: none; } }
+  @media (max-width: 560px) {
+    .viewer { border-radius: 16px; }
+    .viewer-header { padding: 16px; gap: 12px; min-height: 105px; }
+    .screen-copy h3 { font-size: 1.0625rem; }
+    .screen-copy p { font-size: 0.8125rem; }
+    .expand { width: 44px; padding: 0; justify-content: center; }
+    .expand > span { display: none; }
+    .screen-image { height: 480px; }
+    .screen-image img { object-position: top; }
+    .previous { left: 8px; } .next { right: 8px; }
+    .step { width: 40px; height: 40px; opacity: .9; }
+    .thumbnails { gap: 8px; margin-top: 12px; }
+    .thumbnails button { padding: 7px; border-radius: 12px; }
+    .thumbnails strong { font-size: 0.6875rem; }
+    .screen-dialog header { padding-inline: 12px; }
+  }
+</style>
+<script>
+  import { reducedMotion } from '../scripts/motion-preference';
+  document.querySelectorAll<HTMLElement>('[data-workspace-showcase]').forEach(showcase => {
+    const track = showcase.querySelector<HTMLOListElement>('.screen-track')!;
+    const slides = [...track.querySelectorAll<HTMLElement>('.screen')];
+    const title = showcase.querySelector<HTMLElement>('[data-slide-title]')!;
+    const summary = showcase.querySelector<HTMLElement>('[data-slide-summary]')!;
+    const thumbnails = [...showcase.querySelectorAll<HTMLButtonElement>('[data-slide-to]')];
+    const dialog = showcase.querySelector<HTMLDialogElement>('dialog')!;
+    const fullImage = dialog.querySelector<HTMLImageElement>('[data-full-image]')!;
+    let active = 0, frame = 0;
+    const showFullImage = () => {
+      const image = slides[active].querySelector<HTMLImageElement>('img')!;
+      const mobileSource = slides[active].querySelector<HTMLSourceElement>('source');
+      fullImage.src = mobileSource && window.matchMedia(mobileSource.media).matches ? mobileSource.srcset : image.currentSrc || image.src;
+      fullImage.alt = image.alt;
+      dialog.querySelector('[data-full-title]')!.textContent = slides[active].dataset.label!;
+    };
+    const update = (index: number) => {
+      active = index; title.textContent = slides[index].dataset.label!; summary.textContent = slides[index].dataset.summary!;
+      thumbnails.forEach(thumb => { if (Number(thumb.dataset.slideTo) === index) thumb.setAttribute('aria-current', 'true'); else thumb.removeAttribute('aria-current'); });
+      if (dialog.open) showFullImage();
+    };
+    const go = (index: number) => {
+      const target = (index + slides.length) % slides.length;
+      if (dialog.open) update(target);
+      track.scrollTo({ left: slides[target].offsetLeft, behavior: dialog.open || reducedMotion.matches ? 'instant' : 'smooth' });
+    };
+    const onScroll = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => { frame = 0; const nearest = slides.reduce((best, slide, i) => Math.abs(slide.offsetLeft - track.scrollLeft) < Math.abs(slides[best].offsetLeft - track.scrollLeft) ? i : best, 0); if (nearest !== active) update(nearest); });
+    };
+    showcase.querySelectorAll('[data-previous]').forEach(button => button.addEventListener('click', () => go(active - 1)));
+    showcase.querySelectorAll('[data-next]').forEach(button => button.addEventListener('click', () => go(active + 1)));
+    thumbnails.forEach(thumb => thumb.addEventListener('click', () => go(Number(thumb.dataset.slideTo))));
+    track.addEventListener('scroll', onScroll, { passive: true });
+    showcase.addEventListener('keydown', event => {
+      if (event.altKey || event.ctrlKey || event.metaKey) return;
+      let target = active;
+      if (event.key === 'ArrowRight') target++; else if (event.key === 'ArrowLeft') target--; else if (event.key === 'Home') target = 0; else if (event.key === 'End') target = slides.length - 1; else return;
+      event.preventDefault(); go(target);
+    });
+    const expand = () => {
+      showFullImage(); dialog.showModal();
+    };
+    let touchStart: { x: number; y: number } | undefined;
+    fullImage.addEventListener('pointerdown', event => { if (event.pointerType === 'touch') touchStart = { x: event.clientX, y: event.clientY }; });
+    fullImage.addEventListener('pointerup', event => {
+      if (!touchStart) return;
+      const dx = event.clientX - touchStart.x, dy = event.clientY - touchStart.y;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) go(active + (dx < 0 ? 1 : -1));
+      touchStart = undefined;
+    });
+    fullImage.addEventListener('pointercancel', () => { touchStart = undefined; });
+    showcase.querySelector('[data-expand]')!.addEventListener('click', expand);
+    track.addEventListener('click', event => { if ((event.target as Element).closest('.screen-image')) expand(); });
+    dialog.querySelector('[data-close-preview]')!.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
+    const observer = new ResizeObserver(() => track.scrollTo({ left: slides[active].offsetLeft, behavior: 'instant' })); observer.observe(track);
+    if (import.meta.hot) import.meta.hot.dispose(() => { observer.disconnect(); cancelAnimationFrame(frame); });
+  });
+</script>

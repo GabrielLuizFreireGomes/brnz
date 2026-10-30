@@ -1,0 +1,27 @@
+---
+import BrnzLogo from './BrnzLogo.astro';
+---
+<div class="workspace-logo" data-workspace-logo aria-label="BRNZ Workspace">
+  <BrnzLogo />
+  <span>workspace</span>
+</div>
+<style>
+  .workspace-logo { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 9px; color: var(--on-dark); }
+  .workspace-logo :global(svg) { width: clamp(98px, 10vw, 132px); height: auto; }
+  .workspace-logo > span { padding-left: 2px; font-family: var(--font); font-size: 0.625rem; font-weight: 500; line-height: 1; text-transform: uppercase; letter-spacing: 0.34em; color: var(--brand-pale); }
+  :global(html[data-motion='on'].js) .workspace-logo :global(path) { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  :global(html[data-motion='on'].js) .workspace-logo.is-in :global(path) { animation: workspace-draw 1100ms var(--ease-out) both; animation-delay: calc(var(--k) * 100ms); }
+  :global(html[data-motion='on'].js) .workspace-logo.is-in > span { animation: workspace-name 650ms var(--ease-out) 450ms both; }
+  @keyframes workspace-draw { to { stroke-dashoffset: 0; } }
+  @keyframes workspace-name { from { opacity: 0; transform: translateY(5px); letter-spacing: 0.5em; } }
+</style>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-workspace-logo]').forEach(logo => {
+    if (!('IntersectionObserver' in window)) { logo.classList.add('is-in'); return; }
+    const observer = new IntersectionObserver(entries => {
+      if (entries.some(entry => entry.isIntersecting)) { logo.classList.add('is-in'); observer.disconnect(); }
+    }, { threshold: 0.5 });
+    observer.observe(logo);
+    if (import.meta.hot) import.meta.hot.dispose(() => observer.disconnect());
+  });
+</script>

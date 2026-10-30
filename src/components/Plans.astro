@@ -1,5 +1,5 @@
 ---
-import { plans, planRows, separateEstimate, wa } from '../data/site';
+import { plans, planRows, wa } from '../data/site';
 import Arrow from './Arrow.astro';
 const ask = (p: (typeof plans)[number]) => wa(`Olá, brnz! Quero saber mais sobre o pacote ${p.name}.`);
 ---
@@ -49,14 +49,14 @@ const ask = (p: (typeof plans)[number]) => wa(`Olá, brnz! Quero saber mais sobr
         const missing = planRows.slice(2).filter((_, r) => p.cells[r + 2] === 'Não incluso');
         return (
           <article class:list={['plan', { featured: p.featured }]} role="listitem">
-            {p.featured && <p class="tag">Mais escolhido</p>}
+            {p.featured && <p class="tag">Para ter constância</p>}
             <h3 class="plan-name">{p.name}</h3>
             <p class="plan-price">{p.price} <small>{p.period}</small></p>
             <p class="plan-fit">Para {p.cells[0].charAt(0).toLowerCase() + p.cells[0].slice(1)}.</p>
             <ul class="incl">
               {included.map((x) => <li><span>{x.row}</span><b>{x.value}</b></li>)}
             </ul>
-            {missing.length > 0 && <p class="miss">Não inclui: {missing.join(', ').toLowerCase()}.</p>}
+            {missing.length > 0 && <p class="miss">Não inclui: {missing.map(label => label.startsWith('BRNZ Workspace') ? 'BRNZ Workspace' : label.toLowerCase()).join(', ')}.</p>}
             {p.note && <p class="plan-note">{p.note}</p>}
             <a class:list={['btn', { 'btn--light': p.featured }]} href={ask(p)} target="_blank" rel="noopener">Quero o {p.name} <Arrow /></a>
           </article>
@@ -64,7 +64,6 @@ const ask = (p: (typeof plans)[number]) => wa(`Olá, brnz! Quero saber mais sobr
       })}
     </div>
   </div>
-  <p class="note" data-reveal>Contratando separado, o escopo do Completo passaria de {separateEstimate} por mês. Os valores são pontos de partida: o orçamento final depende do tamanho do negócio.</p>
 </section>
 
 <style>
@@ -87,7 +86,6 @@ const ask = (p: (typeof plans)[number]) => wa(`Olá, brnz! Quero saber mais sobr
   .featured.none { color: var(--on-dark-soft); }
   .cta-row td { padding-block: 28px 32px; }
   .cta-row .btn { width: 100%; justify-content: space-between; }
-  .note { max-width: 52ch; margin-top: 40px; margin-left: 34%; padding-left: 20px; font-size: var(--t-small); color: var(--ink-soft); }
 
   .stack { display: none; }
 
@@ -127,7 +125,6 @@ const ask = (p: (typeof plans)[number]) => wa(`Olá, brnz! Quero saber mais sobr
     .plan-note { margin-top: 8px; font-size: 0.8125rem; }
     .plan > :nth-last-child(2) { margin-bottom: 20px; }
     .plan .btn { width: 100%; justify-content: space-between; border-radius: 999px; }
-    .note { margin-left: 0; padding-left: 0; margin-top: 24px; }
   }
   @keyframes nudge-x { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
 </style>

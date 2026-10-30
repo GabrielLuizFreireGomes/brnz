@@ -1,6 +1,7 @@
 ---
 import { services } from '../data/site';
 import Arrow from './Arrow.astro';
+import BrnzLogo from './BrnzLogo.astro';
 ---
 <section class="services" id="servicos" aria-labelledby="servicos-title">
   <div class="statement on-light">
@@ -8,6 +9,23 @@ import Arrow from './Arrow.astro';
       <span>Do post</span>
       <span>ao site.</span>
     </h2>
+    <div class="showcase" aria-hidden="true">
+      <div class="poster">
+        <BrnzLogo />
+        <svg viewBox="0 0 1000 1250"><use href="#art-twist" /></svg>
+        <div class="poster-footer"><i></i><i></i><i></i></div>
+      </div>
+      <div class="reel">
+        <div class="reel-top"><i></i><span></span></div>
+        <div class="reel-art"><i></i><i></i><i></i></div>
+        <svg class="play" viewBox="0 0 24 24"><path d="m9 6 9 6-9 6Z" /></svg>
+        <div class="reel-bottom"><i></i><i></i></div>
+      </div>
+      <div class="browser-preview">
+        <div class="browser-bar"><i></i><i></i><i></i><span></span></div>
+        <div class="browser-content"><BrnzLogo /><div class="browser-art"><svg viewBox="0 0 1600 1000"><use href="#art-waves" /></svg></div><div class="browser-lines"><i></i><i></i><i></i></div></div>
+      </div>
+    </div>
     <div class="foot" data-reveal style="--i:1">
       <p>Cinco frentes com uma direção visual só. Você contrata uma ou todas, e o time é o mesmo.</p>
       <a class="btn" href="#pacotes">Ver pacotes <Arrow /></a>
@@ -15,7 +33,7 @@ import Arrow from './Arrow.astro';
   </div>
   <ul class="rows on-dark">
     {services.map((s, i) => (
-      <li class="row" data-reveal style={`--i:${i}`}>
+      <li class="row" id={s.id} data-reveal style={`--i:${i}`}>
         <h3>{s.name}</h3>
         <p>{s.text}</p>
         <ul class="terms">{s.terms.map((t) => <li>{t}</li>)}</ul>
@@ -27,12 +45,43 @@ import Arrow from './Arrow.astro';
 <style>
   .services { display: grid; grid-template-columns: 1fr 1fr; }
   .statement {
-    display: flex; flex-direction: column; justify-content: space-between; gap: 48px;
+    display: flex; flex-direction: column; justify-content: space-between; gap: 32px;
     padding: clamp(48px, 6vw, 88px) var(--margin);
     background: var(--brand-mist); color: var(--navy);
   }
   .zig { display: grid; font-size: var(--t-head); line-height: 0.95; letter-spacing: -0.045em; }
   .zig span:nth-child(2) { text-align: right; }
+  .showcase { position: relative; width: 100%; min-height: 320px; flex: 1; margin-block: 10px; isolation: isolate; }
+  .poster, .reel, .browser-preview { position: absolute; overflow: hidden; box-shadow: 0 18px 30px #10153a24; }
+  .poster { width: 46%; aspect-ratio: 4 / 5; left: 5%; top: 4%; border-radius: 16px; background: var(--brand); color: var(--brand-pale); transform: rotate(-11deg); }
+  .poster > :global(svg:first-child) { position: absolute; width: 40%; top: 9%; left: 10%; color: var(--on-dark); }
+  .poster > svg { position: absolute; width: 120%; height: 80%; left: -10%; top: 15%; }
+  .poster-footer { position: absolute; display: flex; gap: 5px; bottom: 9%; left: 10%; }
+  .poster-footer i { width: 15px; height: 15px; border-radius: 50%; background: var(--brand-pale); }
+  .poster-footer i:nth-child(2) { background: var(--brand-night); }
+  .poster-footer i:nth-child(3) { background: var(--brand-mist); }
+  .reel { width: 29%; aspect-ratio: 9 / 16; top: 1%; right: 6%; border: 5px solid var(--brand-night); border-radius: 23px; background: var(--brand-night); color: var(--brand-mist); transform: rotate(10deg); }
+  .reel-top { position: absolute; top: 5%; left: 9%; right: 9%; display: flex; gap: 6px; align-items: center; z-index: 2; }
+  .reel-top i { width: 13px; height: 13px; border: 1px solid var(--brand-pale); border-radius: 50%; }
+  .reel-top span { width: 40%; height: 3px; background: var(--brand-pale); border-radius: 3px; }
+  .reel-art { position: absolute; inset: 16% -40% 5%; display: flex; gap: 8%; transform: rotate(-25deg); }
+  .reel-art i { width: 32%; height: 100%; background: var(--brand); border-radius: 40%; }
+  .reel-art i:nth-child(2) { background: var(--brand-pale); }
+  .play { position: absolute; width: 30px; height: 30px; left: calc(50% - 15px); top: calc(50% - 15px); fill: var(--on-dark); }
+  .reel-bottom { position: absolute; left: 10%; bottom: 8%; display: grid; gap: 5px; width: 70%; }
+  .reel-bottom i { height: 4px; border-radius: 3px; background: var(--brand-mist); }
+  .reel-bottom i:last-child { width: 65%; }
+  .browser-preview { width: 69%; aspect-ratio: 1.65; bottom: 1%; left: 24%; border: 1px solid #a4addd; border-radius: 14px; background: var(--on-dark); transform: rotate(-3deg); }
+  .browser-bar { display: flex; align-items: center; gap: 4px; padding: 9px 11px; background: #e2e5f4; }
+  .browser-bar i { width: 4px; height: 4px; border-radius: 50%; background: #939bc6; }
+  .browser-bar span { width: 42%; height: 5px; border-radius: 5px; background: #c3c9e8; margin: auto; }
+  .browser-content { position: relative; height: calc(100% - 23px); padding: 7%; }
+  .browser-content > :global(svg) { width: 22%; color: var(--brand); }
+  .browser-art { position: absolute; top: 16%; right: 6%; width: 42%; height: 75%; background: var(--brand); border-radius: 12px; overflow: hidden; }
+  .browser-art svg { width: 150%; height: 100%; color: var(--brand-pale); }
+  .browser-lines { margin-top: 11%; display: grid; gap: 7px; width: 38%; }
+  .browser-lines i { height: 7px; border-radius: 5px; background: var(--brand-mist); }
+  .browser-lines i:last-child { width: 55%; height: 13px; background: var(--brand); }
   .foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
   .foot p { max-width: 30ch; font-size: var(--t-body); line-height: 1.45; }
   .foot .btn { flex: none; }
@@ -53,7 +102,8 @@ import Arrow from './Arrow.astro';
   }
   @media (max-width: 860px) {
     .services { grid-template-columns: 1fr; }
-    .statement { min-height: 0; padding-block: 56px 48px; gap: 64px; }
+    .statement { min-height: 0; padding-block: 56px 48px; gap: 32px; }
+    .showcase { min-height: 0; aspect-ratio: 1.25; max-width: 520px; align-self: center; flex: none; }
     .zig { font-size: var(--t-head-sm); }
     .foot { flex-direction: column; align-items: flex-start; }
     .row { grid-template-columns: 1fr; gap: 10px; padding: 28px var(--margin); }

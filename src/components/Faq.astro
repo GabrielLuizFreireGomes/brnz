@@ -1,30 +1,52 @@
 ---
-import { faqs } from '../data/site';
+import { faqs, whatsappUrl } from '../data/site';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+const categories = [...new Set(faqs.map(faq => faq.category))];
 ---
 <section class="faq wrap" id="duvidas" aria-labelledby="duvidas-title">
-  <h2 id="duvidas-title" class="q head" data-reveal>Dúvidas comuns</h2>
-  <dl>
-    {faqs.map((f) => (
-      <div class="pair" data-reveal="lift">
-        <dt class="q">{f.q}</dt>
-        <dd class="a">{f.a}</dd>
-      </div>
-    ))}
-  </dl>
+  <div class="faq-intro">
+    <span class="eyebrow">Antes de começar</span>
+    <h2 id="duvidas-title">Pode perguntar.</h2>
+    <p>Do plano à entrega, tire suas dúvidas por aqui.</p>
+    <a class="btn" href={whatsappUrl} target="_blank" rel="noopener"><span>Falar com a equipe</span><WhatsAppIcon /></a>
+  </div>
+  <div class="faq-groups">
+    {categories.map((category, groupIndex) => <div class="faq-group">
+      <h3><span aria-hidden="true">0{groupIndex + 1}</span>{category}</h3>
+      <div class="questions">{faqs.filter(faq => faq.category === category).map((faq, i) => <details name="brnz-faq" open={groupIndex === 0 && i === 0}>
+        <summary><span>{faq.q}</span><i aria-hidden="true">+</i></summary>
+        <div class="answer-wrap"><p>{faq.a}</p></div>
+      </details>)}</div>
+    </div>)}
+  </div>
 </section>
-
 <style>
-  .faq { padding-block: var(--section); background: var(--paper-2); }
-  dl { display: grid; gap: 56px; margin-top: 64px; }
-  .pair { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); align-items: baseline; }
-  .q { grid-column: 1 / span 6; font-size: var(--t-sub); font-weight: 500; line-height: 1.1; letter-spacing: -0.03em; }
-  .head { color: var(--ink-soft); }
-  .a { grid-column: 7 / span 6; max-width: 40ch; font-size: var(--t-body); line-height: 1.55; }
-
-  @media (max-width: 900px) {
-    dl { gap: 56px; margin-top: 48px; }
-    .pair { display: block; }
-    .q { font-size: var(--t-sub); }
-    .a { margin-top: 12px; }
+  .faq { display: grid; grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.4fr); gap: clamp(32px, 6vw, 88px); align-items: start; padding-block: clamp(48px, 6vw, 88px); background: var(--paper-2); }
+  .faq-intro { position: sticky; top: 32px; }
+  .eyebrow { font-size: var(--t-small); color: var(--brand-pale); }
+  h2 { margin-top: 18px; max-width: 12ch; font-size: clamp(2.5rem, 4vw, 4rem); line-height: 1.2; }
+  .faq-intro p { margin-top: 22px; max-width: 28ch; font-size: var(--t-body); line-height: 1.55; color: var(--on-dark-soft); }
+  .faq-intro .btn { margin-top: 28px; gap: 22px; }
+  .faq-groups { display: grid; gap: 32px; }
+  .faq-group h3 { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; font-size: var(--t-small); font-weight: 500; line-height: 1.4; color: var(--on-dark-soft); }
+  .faq-group h3 > span { font-size: 0.6875rem; color: var(--brand-pale); }
+  .questions { display: grid; gap: 10px; }
+  details { border: 1px solid #aeb8ff1f; border-radius: 16px; background: var(--paper); transition: border-color 220ms, background-color 220ms; }
+  details:hover { border-color: #aeb8ff66; }
+  details[open] { border-color: #aeb8ff66; background: var(--brand-night); }
+  summary { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 74px; padding: 18px 20px; list-style: none; cursor: pointer; font-size: var(--t-body); font-weight: 500; line-height: 1.4; }
+  summary::-webkit-details-marker { display: none; }
+  summary > i { display: grid; place-items: center; width: 32px; height: 32px; flex: none; border-radius: 50%; background: var(--paper-2); color: var(--brand-pale); font-size: 1.25rem; font-style: normal; font-weight: 400; transition: transform 250ms var(--ease-out), background-color 220ms, color 220ms; }
+  details[open] summary > i { transform: rotate(45deg); background: var(--brand-pale); color: var(--navy); }
+  .answer-wrap { padding: 0 72px 22px 20px; }
+  .answer-wrap p { font-size: var(--t-small); line-height: 1.65; color: var(--on-dark-soft); }
+  details[open] .answer-wrap { animation: answer-in 240ms var(--ease-out); }
+  @keyframes answer-in { from { opacity: 0; transform: translateY(-5px); } }
+  @supports (interpolate-size: allow-keywords) {
+    details { interpolate-size: allow-keywords; }
+    details::details-content { block-size: 0; overflow: clip; transition: block-size 280ms var(--ease-out), content-visibility 280ms allow-discrete; }
+    details[open]::details-content { block-size: auto; }
   }
+  @media (max-width: 900px) { .faq { grid-template-columns: 1fr; gap: 40px; } .faq-intro { position: static; } h2 { max-width: none; } .faq-intro p { max-width: 42ch; } }
+  @media (max-width: 560px) { .faq { padding-inline: 20px; } summary { padding: 16px; gap: 14px; } .answer-wrap { padding: 0 16px 20px; } }
 </style>

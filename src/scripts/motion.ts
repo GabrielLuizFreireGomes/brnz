@@ -45,8 +45,7 @@ void syncScroll();
 // Interrompe a inércia antes da ação nativa do teclado, sem cancelar a tecla.
 const interruptForKeyboard = (event: KeyboardEvent) => {
   if (!smooth || event.ctrlKey || event.metaKey || event.altKey) return;
-  // Setas, PageUp/PageDown e espaço ficam com a navegação por setores (sectors.ts).
-  if (!['Home', 'End', 'Tab'].includes(event.key)) return;
+  if (!['Home', 'End', 'Tab', 'ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', ' '].includes(event.key)) return;
   const target = event.target;
   if (target instanceof HTMLElement && target.closest('input, textarea, select, [contenteditable="true"]')) return;
   smooth.scrollTo(window.scrollY, { immediate: true });

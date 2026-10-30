@@ -3,12 +3,31 @@ import '../styles/global.css';
 import ArtDefs from '../components/art/ArtDefs.astro';
 import fontLatin from '@fontsource-variable/inter-tight/files/inter-tight-latin-wght-normal.woff2?url';
 import fontBrand from '../fonts/sans-sara.woff2?url';
+import { instagramUrl, whatsappNumber, services } from '../data/site';
 
 interface Props { title: string; description: string }
 const { title, description } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site);
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const canonical = new URL(base, Astro.site);
 const socialImage = new URL(`${base}og-brnz.png`, Astro.site);
+const organizationId = `${canonical.href}#organization`;
+const websiteId = `${canonical.href}#website`;
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization', '@id': organizationId,
+      name: 'BRNZ', url: canonical.href,
+      logo: { '@type': 'ImageObject', url: new URL('brnz-logo.svg', canonical).href, width: 444, height: 174 },
+      description: 'Estúdio criativo de design, vídeo, fotografia, sites e automação. Atendimento online em todo o Brasil.',
+      telephone: `+${whatsappNumber}`, sameAs: [instagramUrl],
+      areaServed: { '@type': 'Country', name: 'Brasil' },
+    },
+    { '@type': 'WebSite', '@id': websiteId, url: canonical.href, name: 'BRNZ', inLanguage: 'pt-BR', publisher: { '@id': organizationId } },
+    { '@type': 'WebPage', '@id': `${canonical.href}#webpage`, url: canonical.href, name: title, description, inLanguage: 'pt-BR', isPartOf: { '@id': websiteId }, about: { '@id': organizationId }, primaryImageOfPage: { '@type': 'ImageObject', url: socialImage.href } },
+    ...services.map(service => ({ '@type': 'Service', '@id': `${canonical.href}#${service.id}`, name: service.name, description: service.text, url: `${canonical.href}#${service.id}`, provider: { '@id': organizationId } })),
+  ],
+};
 ---
 <!doctype html>
 <html lang="pt-BR">
@@ -20,6 +39,7 @@ const socialImage = new URL(`${base}og-brnz.png`, Astro.site);
     <link rel="preload" href={fontLatin} as="font" type="font/woff2" crossorigin="anonymous" />
     <link rel="preload" href={fontBrand} as="font" type="font/woff2" crossorigin="anonymous" />
     <link rel="canonical" href={canonical} />
+    <link rel="sitemap" type="application/xml" href={`${base}sitemap.xml`} />
     <meta name="theme-color" content="#07080f" />
     <meta name="color-scheme" content="dark" />
     <!-- A página já é escura: extensões como o Dark Reader não devem repintar as cores da marca. -->
@@ -27,6 +47,7 @@ const socialImage = new URL(`${base}og-brnz.png`, Astro.site);
     <link rel="icon" href={`${base}favicon.ico?v=3`} sizes="16x16 32x32 48x48" />
     <link rel="icon" href={`${base}favicon.svg?v=3`} type="image/svg+xml" sizes="any" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="BRNZ" />
     <meta property="og:locale" content="pt_BR" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -36,6 +57,11 @@ const socialImage = new URL(`${base}og-brnz.png`, Astro.site);
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="brnz, estúdio criativo: design, vídeo, foto, site e automação num time só." />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    <meta name="twitter:image:alt" content="BRNZ — design, vídeo, foto, site e automação num time só." />
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData).replace(/</g, '\\u003c')} />
     <script is:inline define:vars={{ previewMotion: import.meta.env.DEV }}>
       document.documentElement.classList.add('js');
       document.documentElement.dataset.motion = previewMotion || !matchMedia('(prefers-reduced-motion: reduce)').matches ? 'on' : 'off';

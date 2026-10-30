@@ -2,15 +2,14 @@
 import { whatsappUrl, instagramUrl, instagramHandle } from '../data/site';
 import Arrow from './Arrow.astro';
 import BrnzLogo from './BrnzLogo.astro';
-// Cada chip é alguém que o cliente teria que contratar separado. Eles flutuam em volta da marca
-// e, ao rolar, se juntam no centro: tudo junto, num time só.
+// Especialidades distribuídas em volta da marca; ao rolar, se juntam no centro.
 const chips = [
-  { label: 'Designer', x: 10, y: 14, mx: 0, my: 0, z: 1.4, d: 0 },
-  { label: 'Editor de vídeo', x: 72, y: 8, mx: 50, my: 8, z: 0.8, d: 1 },
-  { label: 'Fotógrafo', x: 3, y: 62, mx: 2, my: 80, z: 0.9, d: 2 },
-  { label: 'Dev do site', x: 80, y: 66, mx: 56, my: 88, z: 1.3, d: 3 },
-  { label: 'Social media', x: 24, y: 88, mx: 0, my: 0, z: 0.7, d: 4 },
-  { label: '+ 4 prazos diferentes', x: 58, y: 92, mx: 0, my: 0, z: 1.1, d: 5 },
+  { label: 'Designer', x: 8, y: 3, mx: 0, my: 0, z: 1.4, d: 0 },
+  { label: 'Editor de vídeo', x: 71, y: 5, mx: 48, my: 6, z: 0.8, d: 1 },
+  { label: 'Fotógrafo', x: 3, y: 53, mx: 1, my: 77, z: 0.9, d: 2 },
+  { label: 'Dev do site', x: 79, y: 56, mx: 51, my: 84, z: 1.3, d: 3 },
+  { label: 'Social media', x: 24, y: 81, mx: 0, my: 0, z: 0.7, d: 4 },
+  { label: 'Prazos alinhados', x: 58, y: 84, mx: 0, my: 0, z: 1.1, d: 5 },
 ];
 // Mosaico de planos azuis arredondados, como o destaque "Identidade Visual" do Instagram.
 const tiles = Array.from({ length: 48 }, (_, i) => ({ i, tone: (i * 7) % 5 }));
@@ -28,13 +27,13 @@ const year = new Date().getFullYear();
 
   <header class="bar wrap">
     <a href="#inicio" class="mark" aria-label="brnz, início"><BrnzLogo /></a>
-    <p class="about">Estúdio criativo / Design, vídeo e tecnologia / Brasil</p>
+    <p class="about"><span>Estúdio criativo</span><span>Design, vídeo e tecnologia / Brasil</span></p>
     <nav aria-label="Principal">
       <ul>
         <li class="hide-md"><a href="#servicos">Serviços</a></li>
         <li class="hide-md"><a href="#pacotes">Pacotes</a></li>
-        <li class="hide-md"><a href="#time">Time</a></li>
-        <li><a class="pill pill--ghost" href={whatsappUrl} target="_blank" rel="noopener">Orçamento</a></li>
+        <li class="hide-md"><a href="#workspace">Workspace</a></li>
+        <li><a class="contact-link" data-tilt href={whatsappUrl} target="_blank" rel="noopener"><span>Orçamento</span><Arrow /></a></li>
       </ul>
     </nav>
   </header>
@@ -45,19 +44,26 @@ const year = new Date().getFullYear();
     </div>
     <ul class="chips" aria-label="Quem você deixa de contratar separado">
       {chips.map((c) => (
-        <li class="chip" style={`--x:${c.x}%;--y:${c.y}%;--mx-pos:${c.mx}%;--my-pos:${c.my}%;--z:${c.z};--d:${c.d}`}><span>{c.label}</span></li>
+        <li class="chip" style={`--x:${c.x}%;--y:${c.y}%;--mx-pos:${c.mx}%;--my-pos:${c.my}%;--z:${c.z};--d:${c.d}`}>
+          <div class="specialty">
+            <span>{c.label}</span>
+          </div>
+        </li>
       ))}
     </ul>
   </div>
 
   <div class="opening wrap">
+    <div class="headline">
+    <p class="hero-eyebrow">Estúdio criativo · Design, vídeo e sites</p>
     <h1 id="hero-title" class="title lines">
       <span class="line"><span data-line style="--i:0">Tudo junto,</span></span>
       <span class="line"><span data-line style="--i:1">num time só.</span></span>
     </h1>
+    </div>
     <div class="foot" data-load style="--i:0">
       <p>Design, vídeo, foto, site e automação feitos pelo mesmo time. <span>Uma conversa no lugar de cinco fornecedores.</span></p>
-      <a class="pill" href={whatsappUrl} target="_blank" rel="noopener">Pedir orçamento <Arrow /></a>
+      <div class="hero-actions"><a class="hero-cta" data-tilt href={whatsappUrl} target="_blank" rel="noopener"><span>Pedir orçamento</span><Arrow /></a><a class="see-plans" href="#pacotes">Ver pacotes <span aria-hidden="true">↓</span></a></div>
     </div>
   </div>
 
@@ -119,30 +125,23 @@ const year = new Date().getFullYear();
   }
 
   /* ---------- Barra ---------- */
-  .bar { position: relative; z-index: 3; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 32px; padding-block: 20px; }
+  .bar { position: relative; z-index: 3; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 48px; padding-block: 20px; }
   .mark { display: block; width: 84px; padding: 8px 0; color: var(--on-dark); }
-  .about { padding-left: 9vw; font-size: var(--t-small); font-weight: 500; color: var(--on-dark-soft); }
+  .about { font-size: 0.8125rem; line-height: 1.5; font-weight: 500; color: var(--on-dark-soft); }
+  .about span { display: block; }
   .bar ul { display: flex; align-items: center; gap: clamp(20px, 2.2vw, 32px); }
-  .bar ul a:not(.pill) {
+  .bar ul a {
     display: inline-flex; align-items: center; min-height: 44px; font-size: var(--t-small); font-weight: 500;
     text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 0.35em; text-decoration-thickness: 1.5px;
     transition: text-decoration-color var(--t-fast) var(--ease-out);
   }
-  .bar ul a:not(.pill):hover { text-decoration-color: currentColor; }
+  .bar ul a:hover { text-decoration-color: currentColor; }
 
-  .pill {
-    display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 22px 0 18px;
-    border-radius: 999px; background: var(--on-dark); color: var(--navy);
-    font-size: var(--t-small); font-weight: 600; text-decoration: none; white-space: nowrap;
-    transition: background-color var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
+  .hero-cta {
+    display: inline-flex; align-items: center; justify-content: space-between; gap: 28px;
+    min-height: 56px; padding: 0 22px; font-size: var(--t-small); font-weight: 600; white-space: nowrap;
   }
-  .pill::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--brand-hi); }
-  .pill :global(svg) { width: 15px; height: 15px; transition: transform var(--t-fast) var(--ease-out); }
-  .pill:hover { background: #fff; transform: translateY(-2px); }
-  .pill:hover :global(svg) { transform: translate(2px, -2px); }
-  .pill:active { transform: scale(0.97); }
-  .pill--ghost { min-height: 44px; background: rgba(243, 244, 251, 0.1); color: var(--on-dark); box-shadow: inset 0 0 0 1px rgba(243, 244, 251, 0.18); }
-  .pill--ghost:hover { background: rgba(243, 244, 251, 0.18); }
+  .bar ul .contact-link { gap: 20px; padding-inline: 18px; min-height: 46px; }
 
   /* ---------- A marca no centro ---------- */
   .stage { position: relative; z-index: 2; display: grid; place-items: center; min-height: 0; }
@@ -153,27 +152,29 @@ const year = new Date().getFullYear();
   }
   .logo-wrap :global(.hero-logo) { width: 100%; height: auto; color: #fff; filter: drop-shadow(0 0 40px rgba(76, 99, 255, 0.45)); } /* taste-skill-ignore: brilho da marca sobre a luz */
 
-  /* Chips de vidro em profundidades diferentes; ao rolar, convergem para o centro */
+  /* Legendas flutuantes leves; o relevo é exclusivo dos CTAs. */
   .chips { position: absolute; inset: 0 var(--margin); pointer-events: none; }
   .chip {
     position: absolute; left: var(--x); top: var(--y);
     transform: translate3d(calc(var(--mx) * var(--z) * 28px), calc(var(--my) * var(--z) * 22px), 0);
     transition: transform 900ms var(--ease-out);
   }
-  .chip span {
-    transition: transform 500ms var(--ease-out), background-color 300ms;
-    display: inline-flex; align-items: center; gap: 10px; padding: 11px 18px;
-    border-radius: 999px; background: rgba(16, 21, 58, 0.45); box-shadow: inset 0 0 0 1px rgba(243, 244, 251, 0.2); /* taste-skill-ignore: chips de vidro da referência */
-    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-    font-size: var(--t-small); font-weight: 500; color: var(--on-dark); white-space: nowrap;
+  .specialty {
+    display: flex; align-items: center; gap: 9px; padding-block: 10px;
+    color: var(--on-dark-soft); font-size: var(--t-small); white-space: nowrap;
   }
-  .chip span::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--brand-pale); box-shadow: 0 0 10px var(--brand-hi); }
+  .specialty::before { content: ''; width: 16px; height: 1px; background: var(--brand-pale); }
 
   .opening {
     position: relative; z-index: 2; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px 48px;
     padding-block: clamp(12px, 2svh, 24px) clamp(16px, 2.5svh, 28px);
   }
-  .title { font-size: var(--t-head); line-height: 0.95; }
+  .title { font-size: clamp(2.5rem, 4.7vw, 4.5rem); line-height: 1.1; letter-spacing: 0.025em !important; }
+  .hero-eyebrow { margin-bottom: 14px; font-size: 0.8125rem; color: var(--on-dark-soft); }
+  .hero-actions { display: flex; flex-direction: column; align-items: stretch; gap: 12px; flex: none; }
+  .see-plans { display: inline-flex; align-items: center; justify-content: space-between; gap: 18px; min-height: 44px; font-size: var(--t-small); text-decoration: none; color: var(--on-dark-soft); }
+  .see-plans:hover { color: var(--on-dark); }
+  .title .line { padding-block: 0.08em; margin-block: -0.08em; }
   .foot { display: flex; align-items: flex-end; gap: 24px 40px; }
   .foot p { max-width: 34ch; font-size: var(--t-body); line-height: 1.4; }
   .foot p span { color: var(--on-dark-soft); }
@@ -200,24 +201,23 @@ const year = new Date().getFullYear();
   .tiles i::after { animation: sheen 6.5s ease-in-out infinite; animation-delay: calc(var(--n) * 90ms + 1.2s); }
     .beam-a { animation: beam 7s ease-in-out infinite; }
     .beam-b { animation: beam 9s ease-in-out infinite reverse; }
-    .chip span { animation: chip-in 1000ms var(--ease-expo) backwards, float 6s ease-in-out infinite alternate; animation-delay: calc(1100ms + var(--d) * 120ms), calc(var(--d) * -1.1s); }
+    .chip { animation: chip-in 1000ms var(--ease-expo) backwards; animation-delay: calc(1100ms + var(--d) * 120ms); }
     .down span { animation: nudge 1.8s ease-in-out infinite; }
   }
   @keyframes tile-in { from { opacity: 0; transform: translateY(30px) scale(0.92); } }
   @keyframes sheen { 0%, 55% { transform: translateX(-60%); } 85%, 100% { transform: translateX(60%); } }
   @keyframes beam { 0%, 100% { transform: translateX(-12%); opacity: 0.25; } 50% { transform: translateX(12%); opacity: 0.9; } }
-  @keyframes chip-in { from { opacity: 0; transform: scale(0.6); filter: blur(8px); } }
-  @keyframes float { from { translate: 0 -7px; } to { translate: 0 7px; } }
+  @keyframes chip-in { from { opacity: 0; transform: translateY(10px); } }
   @keyframes nudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
 
   @media (max-width: 1000px) {
     .hide-md { display: none; }
-    .about { padding-left: 0; text-align: center; }
   }
   @media (max-width: 900px) {
     .opening { grid-template-columns: 1fr; }
     .foot { flex-direction: column; align-items: stretch; gap: 20px; }
-    .foot .pill { justify-content: space-between; min-height: 52px; }
+    .foot .hero-cta { align-self: flex-start; }
+    .hero-actions { align-self: flex-start; }
   }
   @media (max-width: 760px) {
     .hero { min-height: max(620px, 100svh); }
@@ -229,11 +229,15 @@ const year = new Date().getFullYear();
     .tiles i:nth-child(n + 31) { display: none; }
     .stage { padding-block: 48px; }
     .logo-wrap { width: 76vw; }
-    .chip span { padding: 8px 12px; font-size: 0.8125rem; }
-    .chip { left: var(--mx-pos); top: var(--my-pos); }
+    .specialty { gap: 8px; padding: 10px 0; }
+    .specialty { font-size: 0.8125rem; }
+    .chip { left: var(--mx-pos); top: var(--my-pos); transform: none; }
     .chip:nth-child(5), .chip:nth-child(6) { display: none; }
     .title { font-size: var(--t-head-sm); }
     .down { display: none !important; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(html:not([data-motion='on'])) .chip { animation: none; }
   }
 </style>
 
@@ -254,9 +258,7 @@ const year = new Date().getFullYear();
     };
     const onLeave = () => {
       hero.style.setProperty('--mx', '0'); hero.style.setProperty('--my', '0');
-      chips.forEach((chip) => { (chip.firstElementChild as HTMLElement).style.transform = ''; });
     };
-
     // Planos acendem por onde o cursor passa e apagam devagar (rastro de luz)
     const tiles = [...hero.querySelectorAll<HTMLElement>('.tiles i')];
     const light = (tile: HTMLElement) => {
@@ -272,15 +274,6 @@ const year = new Date().getFullYear();
         const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
         if (Math.hypot(px - cx, py - cy) < Math.max(r.width, r.height) * 0.55) light(tile);
       }
-      // Chips magnéticos: fogem do cursor quando ele chega perto
-      chips.forEach((chip) => {
-        const span = chip.firstElementChild as HTMLElement;
-        const r = span.getBoundingClientRect();
-        const dx = r.left + r.width / 2 - px, dy = r.top + r.height / 2 - py;
-        const d = Math.hypot(dx, dy);
-        const f = d < 180 ? (180 - d) / 180 : 0;
-        span.style.transform = f ? `translate(${(dx / (d || 1)) * f * 36}px, ${(dy / (d || 1)) * f * 36}px)` : '';
-      });
     };
     hero.addEventListener('pointermove', (e) => {
       if (!fine.matches || reducedMotion.matches) return;

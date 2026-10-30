@@ -1,7 +1,7 @@
 // O atalho fica disponível quando o CTA principal não está à vista.
 const floating = document.querySelector<HTMLAnchorElement>('.floating-contact');
 if (floating) {
-  const targets = document.querySelectorAll('.opening .pill, .closing .btn, [data-send]');
+  const targets = document.querySelectorAll('.opening .hero-cta, #workspace .btn, .closing .btn, [data-send], [data-builder-dock]');
   const visible = new Set<Element>();
   floating.inert = true;
   if ('IntersectionObserver' in window) {

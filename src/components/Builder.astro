@@ -1,142 +1,189 @@
 ---
-import { builderOptions, whatsappUrl, whatsappNumber } from '../data/site';
-import Arrow from './Arrow.astro';
-const preset = ['posts', 'video', 'site'];
+import { builderOptions, whatsappNumber, wa } from '../data/site';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+const icons: Record<string, string> = {
+  identidade: 'M5 17 17 5l3 3L8 20H5v-3ZM14 8l3 3',
+  posts: 'M4 4h6v6H4V4Zm10 0h6v6h-6V4ZM4 14h6v6H4v-6Zm10 0h6v6h-6v-6Z',
+  video: 'M4 5h16v14H4V5ZM10 9l5 3-5 3V9Z',
+  captacao: 'M3 7h5l2-3h4l2 3h5v13H3V7ZM16 13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z',
+  site: 'M3 5h18v14H3V5Zm0 5h18M7 7.5h.1M10 7.5h.1',
+  automacao: 'm13 3-8 11h6l-1 7 9-12h-7l1-6Z',
+};
+const helpMessage = 'Olá, brnz! Quero montar um plano para minha marca. Podem me ajudar a escolher os serviços?';
 ---
 <section class="builder wrap on-dark" id="monte" aria-labelledby="monte-title" data-builder data-number={whatsappNumber}>
-  <div class="intro">
-    <h2 id="monte-title" data-reveal>Nenhum encaixa?<br />Monte o seu.</h2>
-    <p data-reveal style="--i:1">Marque o que a sua marca precisa. A mensagem do orçamento sai pronta, é só enviar no WhatsApp.</p>
-    <div class="compare" data-reveal style="--i:2" aria-live="polite">
-      <p class="side">
-        <span class="num" data-count>3</span>
-        <span class="what">profissionais para contratar separado: <span data-roles>social media, editor de vídeo e desenvolvedor</span>.</span>
-      </p>
-      <p class="side us">
-        <span class="num">1</span>
-        <span class="what">conversa com a brnz, com um time só para tudo isso.</span>
-      </p>
+  <header class="builder-head">
+    <span class="eyebrow">Sua marca não precisa caber num pacote.</span>
+    <h2 id="monte-title">Monte seu plano.</h2>
+    <p>Escolha o que você precisa. A gente junta o time e monta o orçamento.</p>
+  </header>
+  <div class="builder-body">
+    <div class="choices">
+      <fieldset>
+        <legend><span>01</span> O que vamos criar?</legend>
+        <div class="services-picker">
+          {builderOptions.map(option => <label class="service-option">
+            <input type="checkbox" name="servico" value={option.id} data-label={option.label} />
+            <span class="service-card">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icons[option.id]} /></svg>
+              <span class="service-text"><strong>{option.label}</strong><small>{option.detail}</small></span>
+              <i class="choice-check" aria-hidden="true"></i>
+            </span>
+          </label>)}
+        </div>
+      </fieldset>
+      <details class="project-context">
+        <summary><span><i>02</i> Quer contar mais sobre o projeto?</span><b aria-hidden="true">+</b></summary>
+        <div class="context-fields">
+          <label class="field"><span>Seu negócio <small>opcional</small></span><input type="text" name="negocio" placeholder="Nome ou tipo do seu negócio" autocomplete="organization" maxlength="60" /></label>
+          <label class="field"><span>O que você tem em mente? <small>opcional</small></span><textarea name="objetivo" rows="3" maxlength="400" placeholder="Ex.: vou lançar uma loja e preciso começar pelas redes e pelo site."></textarea></label>
+        </div>
+      </details>
     </div>
-  </div>
-
-  <div class="panel" data-reveal style="--i:3">
-    <fieldset>
-      <legend>O que você precisa</legend>
-      <div class="chips">
-        {builderOptions.map((o) => (
-          <label class="chip">
-            <input type="checkbox" name="servico" value={o.id} data-label={o.label} data-role={o.role} checked={preset.includes(o.id)} />
-            <span>{o.label}</span>
-          </label>
-        ))}
+    <aside class="request-summary" id="resumo-plano" aria-labelledby="request-title">
+      <div class="request-heading"><span class="request-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><rect x="4" y="4" width="16" height="16" rx="5" fill="currentColor" opacity=".18"/><rect x="12" y="12" width="16" height="16" rx="5" fill="currentColor"/><path d="m17 20 2 2 4-4" stroke="var(--light)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><span class="summary-eyebrow">Feito para você</span><h3 id="request-title">Seu plano</h3></div></div>
+      <p class="selection-count" data-count role="status" aria-live="polite">Nenhum serviço selecionado</p>
+      <ul class="selected-list" data-selected><li class="empty-selection"><span aria-hidden="true">+</span>Comece pelo que sua marca precisa.</li></ul>
+      <div class="request-bottom">
+        <details class="message-preview"><summary>Conferir mensagem <span aria-hidden="true">+</span></summary><p data-preview>{helpMessage}</p></details>
+        <a class="btn send" href={wa(helpMessage)} target="_blank" rel="noopener" aria-label="Pedir ajuda para escolher serviços pelo WhatsApp" data-send><span data-send-label>Me ajude a escolher</span><WhatsAppIcon /></a>
       </div>
-    </fieldset>
-
-    <label class="field">
-      <span>Seu negócio <small>(opcional)</small></span>
-      <input type="text" name="negocio" placeholder="Ex.: loja de roupas, hamburgueria…" autocomplete="organization" maxlength="60" />
-    </label>
-
-    <p class="preview"><span>Sua mensagem</span> <q data-preview>Olá, brnz! Preciso de posts e redes, edição de vídeo e site ou landing page. Pode me passar um orçamento?</q></p>
-    <a class="btn btn--light send" href={whatsappUrl} target="_blank" rel="noopener" data-send>Pedir esse orçamento <Arrow /></a>
+    </aside>
   </div>
+  <div class="builder-dock" data-builder-dock hidden><span data-dock-count>Seu plano</span><a href="#resumo-plano">Ver meu plano <span aria-hidden="true">→</span></a></div>
 </section>
-
 <style>
-  .builder {
-    display: grid; grid-template-columns: var(--axis) 1fr; gap: 48px 0;
-    padding-block: var(--section);
-    background: var(--brand); color: var(--on-dark);
-  }
-  .intro { display: flex; flex-direction: column; padding-right: 48px; }
-  h2 { font-size: var(--t-head); line-height: 0.95; letter-spacing: -0.045em; }
-  .intro p { max-width: 30ch; margin-top: 28px; font-size: var(--t-body); line-height: 1.45; }
-
-  .panel { display: grid; gap: 32px; }
+  .builder { padding-block: clamp(48px, 6vw, 88px); background: var(--brand); color: var(--on-dark); }
+  .builder-head { display: grid; justify-items: center; gap: 16px; text-align: center; margin-bottom: 40px; }
+  .eyebrow { font-size: var(--t-small); color: var(--on-dark-soft); }
+  h2 { font-size: clamp(2.5rem, 4.5vw, 4.5rem); line-height: 1.2; }
+  .builder-head p { max-width: 48ch; font-size: var(--t-body); line-height: 1.5; }
+  .builder-body { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 32px; align-items: start; }
   fieldset { border: 0; padding: 0; min-width: 0; }
-  legend, .field > span { padding: 0; margin-bottom: 14px; font-size: var(--t-small); font-weight: 600; }
-  .field small { font-size: inherit; font-weight: 400; color: var(--on-dark-soft); }
-  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .chip { position: relative; cursor: pointer; }
-  .chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
-  .chip span {
-    display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 18px;
-    background: var(--brand-deep); color: var(--on-dark);
-    font-size: var(--t-body); font-weight: 500;
-    transition: background-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
+  legend { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; font-size: var(--t-lead); font-weight: 600; }
+  legend > span { font-size: 0.75rem; font-weight: 400; color: var(--brand-pale); }
+  .services-picker { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .service-option { position: relative; cursor: pointer; }
+  .service-option input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+  .service-card { display: grid; grid-template-columns: 26px minmax(0, 1fr) 20px; align-items: center; gap: 12px; min-height: 100px; padding: 16px; border: 1px solid #aeb8ff44; border-radius: 16px; background: #151d5b66; transition: background-color 180ms, color 180ms, transform 180ms var(--ease-out), border-color 180ms; }
+  .service-card > svg { width: 25px; height: 25px; color: var(--brand-pale); }
+  .service-text { display: grid; gap: 5px; }
+  .service-text strong { font-size: var(--t-small); font-weight: 600; line-height: 1.3; }
+  .service-text small { font-size: 0.75rem; line-height: 1.4; color: var(--on-dark-soft); }
+  .choice-check { width: 20px; height: 20px; border: 1px solid #aeb8ff88; border-radius: 6px; }
+  .service-option:hover .service-card { border-color: var(--brand-pale); transform: translateY(-2px); }
+  .service-option input:checked + .service-card { background: var(--on-dark); color: var(--navy); border-color: var(--on-dark); }
+  .service-option input:checked + .service-card small { color: var(--navy-soft); }
+  .service-option input:checked + .service-card > svg { color: var(--brand); }
+  .service-option input:checked + .service-card .choice-check { background: var(--brand); border-color: var(--brand); }
+  .service-option input:checked + .service-card .choice-check::after { content: ''; display: block; width: 6px; height: 10px; border: solid white; border-width: 0 1.5px 1.5px 0; transform: translate(6px, 2px) rotate(45deg); }
+  .service-option input:focus-visible + .service-card { outline: 3px solid var(--brand-pale); outline-offset: 3px; }
+  .project-context { margin-top: 24px; border-top: 1px solid #aeb8ff44; }
+  .project-context > summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; padding-block: 16px; cursor: pointer; list-style: none; font-size: var(--t-small); }
+  summary::-webkit-details-marker { display: none; }
+  .project-context summary i { font-size: 0.75rem; font-style: normal; margin-right: 12px; color: var(--brand-pale); }
+  .project-context summary b { font-size: 1.25rem; font-weight: 400; transition: transform 180ms; }
+  .project-context[open] summary b { transform: rotate(45deg); }
+  .context-fields { display: grid; gap: 18px; padding-block: 0 8px; }
+  .field { display: grid; gap: 8px; }
+  .field > span { font-size: var(--t-small); font-weight: 500; }
+  .field small { margin-left: 6px; font-size: 0.75rem; font-weight: 400; color: var(--on-dark-soft); }
+  .field input, .field textarea { width: 100%; min-height: 52px; border: 1px solid #aeb8ff33; border-radius: 12px; padding: 13px 16px; background: var(--brand-deep); color: var(--on-dark); font: inherit; font-size: 1rem; }
+  .field textarea { resize: vertical; }
+  .field input::placeholder, .field textarea::placeholder { color: var(--on-dark-soft); }
+  .request-summary { padding: 28px; border-radius: 24px; background: var(--light); color: var(--navy); box-shadow: 0 16px 32px #10153a26; }
+  .request-heading { display: flex; align-items: center; gap: 14px; }
+  .request-mark { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; background: var(--brand-mist); color: var(--brand); font-size: 1.5rem; }
+  .request-mark svg { width: 32px; height: 32px; }
+  .summary-eyebrow { display: block; font-size: 0.75rem; color: var(--navy-soft); margin-bottom: 4px; }
+  .request-heading h3 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.025em; }
+  .selection-count { margin-block: 22px 12px; font-size: 0.8125rem; color: var(--navy-soft); }
+  .selected-list { display: grid; min-height: 156px; align-content: start; }
+  .selected-list :global(li) { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 4px; border-bottom: 1px solid #2f3b901f; font-size: var(--t-small); }
+  .selected-list :global(li > span) { display: flex; align-items: center; gap: 9px; }
+  .selected-list :global(li > span::before) { content: '✓'; color: var(--brand); font-size: 0.8125rem; }
+  .selected-list :global(button) { display: grid; place-items: center; width: 40px; height: 40px; flex: none; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--navy-soft); font-size: 1.25rem; cursor: pointer; }
+  .selected-list :global(button:hover) { background: var(--brand-mist); color: var(--brand); }
+  .selected-list :global(.empty-selection) { display: grid; justify-content: start; align-content: center; justify-items: start; gap: 14px; min-height: 156px; padding: 20px; border: 1px dashed #2f3b9044; border-radius: 14px; color: var(--navy-soft); }
+  .selected-list :global(.empty-selection > span) { font-size: 1.5rem; color: var(--brand); }
+  .selected-list :global(.empty-selection > span::before) { display: none; }
+  .request-bottom { margin-top: 22px; }
+  .message-preview { border-top: 1px solid #2f3b9026; margin-bottom: 18px; }
+  .message-preview summary { display: flex; align-items: center; justify-content: space-between; min-height: 48px; list-style: none; cursor: pointer; font-size: 0.8125rem; color: var(--navy-soft); }
+  .message-preview p { padding-bottom: 16px; font-size: 0.8125rem; line-height: 1.6; white-space: pre-line; overflow-wrap: anywhere; color: var(--navy-soft); }
+  .send { display: flex; width: 100%; justify-content: space-between; gap: 12px; font-size: var(--t-small); }
+  .builder-dock { display: none; }
+  @media (max-width: 760px) {
+    .builder-dock:not([hidden]) { position: fixed; z-index: 30; inset: auto 16px max(16px, env(safe-area-inset-bottom)); display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 10px 10px 10px 18px; border: 1px solid #aeb8ff66; border-radius: 18px; background: var(--brand-night); box-shadow: 0 8px 30px #02031566; }
+    .builder-dock > span { font-size: 0.8125rem; color: var(--on-dark-soft); }
+    .builder-dock a { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 14px; border-radius: 12px; background: var(--brand-pale); color: var(--navy); font-size: 0.8125rem; font-weight: 500; text-decoration: none; }
   }
-  .chip span::before { content: '+'; font-weight: 600; width: 1ch; transition: transform var(--t-fast) var(--ease-out); }
-  .chip:hover span { background: var(--brand-night); }
-  .chip input:checked + span { background: var(--on-dark); color: var(--navy); }
-  .chip input:checked + span::before { content: ''; width: 0.4em; height: 0.75em; margin: -0.2em 0.15em 0 0.1em; border: solid currentColor; border-width: 0 2px 2px 0; rotate: 45deg; }
-  .chip input:focus-visible + span { outline: 3px solid var(--brand-pale); outline-offset: 3px; }
-  .chip:active span { transform: scale(0.97); }
-
-  .field { display: grid; max-width: 520px; }
-  .field input {
-    min-height: 52px; padding: 0 16px; border: 0; border-radius: var(--r-small);
-    background: var(--brand-deep); color: var(--on-dark); font-size: var(--t-body);
-  }
-  .field input::placeholder { color: var(--on-dark-soft); }
-  .field input:focus-visible { outline: 3px solid var(--brand-pale); outline-offset: 0; }
-
-  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-top: auto; padding-top: 48px; }
-  .side { display: grid; align-content: start; gap: 12px; padding: 24px 24px 28px; background: var(--brand-deep); }
-  .side.us { background: var(--on-dark); color: var(--navy); }
-  .num { font-size: var(--t-display); font-weight: 700; letter-spacing: -0.06em; line-height: 0.85; font-variant-numeric: tabular-nums; }
-  .what { font-size: var(--t-small); line-height: 1.45; max-width: 32ch; }
-  .preview { font-size: var(--t-small); line-height: 1.5; color: var(--on-dark-soft); max-width: 60ch; }
-  .preview span { display: block; color: var(--on-dark); font-weight: 600; margin-bottom: 4px; }
-  .preview q { quotes: '“' '”'; }
-  .send { justify-self: start; }
-
-  .num.bump { animation: bump 360ms var(--ease-out); }
-  @keyframes bump { from { transform: translateY(10px); opacity: 0.3; } to { transform: none; opacity: 1; } }
-
-  @media (max-width: 900px) {
-    .builder { grid-template-columns: 1fr; }
-    .intro { padding-right: 0; }
-    h2 { font-size: var(--t-head-sm); }
-    .compare { grid-template-columns: 1fr 1fr; }
-    .side { padding: 18px 16px 20px; }
-    .send { justify-self: stretch; justify-content: space-between; }
-  }
+  @media (max-width: 1000px) { .builder-body { grid-template-columns: 1fr; gap: 28px; } .request-summary { max-width: none; } .selected-list { min-height: 0; } }
+  @media (max-width: 560px) { .builder { padding-inline: 20px; } .builder-head { margin-bottom: 32px; } .builder-head p { font-size: var(--t-body); } .services-picker { grid-template-columns: 1fr; gap: 10px; } .service-card { min-height: 82px; } .request-summary { padding: 22px; } .send { padding-inline: 16px; font-size: 0.875rem; } }
 </style>
-
 <script>
-  const list = (items: string[]) =>
-    items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} e ${items[items.length - 1]}`;
-
-  document.querySelectorAll<HTMLElement>('[data-builder]').forEach((root) => {
-    const number = root.dataset.number!;
+  import { scrollToElement } from '../scripts/sectors';
+  document.querySelectorAll<HTMLElement>('[data-builder]').forEach(root => {
     const boxes = [...root.querySelectorAll<HTMLInputElement>('input[name="servico"]')];
     const business = root.querySelector<HTMLInputElement>('input[name="negocio"]')!;
+    const goal = root.querySelector<HTMLTextAreaElement>('textarea[name="objetivo"]')!;
     const count = root.querySelector<HTMLElement>('[data-count]')!;
-    const roles = root.querySelector<HTMLElement>('[data-roles]')!;
+    const selected = root.querySelector<HTMLUListElement>('[data-selected]')!;
     const preview = root.querySelector<HTMLElement>('[data-preview]')!;
     const send = root.querySelector<HTMLAnchorElement>('[data-send]')!;
-
+    const sendLabel = root.querySelector<HTMLElement>('[data-send-label]')!;
+    const dock = root.querySelector<HTMLElement>('[data-builder-dock]')!;
+    const dockCount = root.querySelector<HTMLElement>('[data-dock-count]')!;
+    const summary = root.querySelector<HTMLElement>('.request-summary')!;
+    let choicesVisible = false, summaryVisible = false;
+    const mobile = matchMedia('(max-width: 760px)');
+    root.querySelector<HTMLAnchorElement>('[data-builder-dock] a')!.addEventListener('click', event => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault(); scrollToElement(summary);
+    });
+    const updateDock = () => { dock.hidden = !(mobile.matches && boxes.some(box => box.checked) && choicesVisible && !summaryVisible); };
     const update = () => {
-      const picked = boxes.filter((b) => b.checked);
-      const n = picked.length;
-      const before = count.textContent;
-      count.textContent = String(n);
-      if (before !== count.textContent) {
-        count.classList.remove('bump');
-        void count.offsetWidth;
-        count.classList.add('bump');
+      const picked = boxes.filter(box => box.checked);
+      count.textContent = picked.length ? `${picked.length} ${picked.length === 1 ? 'serviço selecionado' : 'serviços selecionados'}` : 'Nenhum serviço selecionado';
+      dockCount.textContent = `${picked.length} ${picked.length === 1 ? 'serviço' : 'serviços'}`;
+      selected.replaceChildren();
+      if (!picked.length) {
+        const empty = document.createElement('li'); empty.className = 'empty-selection';
+        const mark = document.createElement('span'); mark.textContent = '+'; mark.setAttribute('aria-hidden', 'true');
+        empty.append(mark, 'Comece pelo que sua marca precisa.'); selected.append(empty);
       }
-      const lead = root.querySelector('.side .what')!.firstChild!;
-      lead.textContent = n === 0 ? 'Marque ao menos uma opção acima' : n === 1 ? 'profissional para contratar separado: ' : 'profissionais para contratar separado: ';
-      roles.textContent = n ? list(picked.map((b) => b.dataset.role!)) : '';
-      const what = n ? list(picked.map((b) => b.dataset.label!.toLowerCase())) : 'ajuda com a minha marca';
-      const who = business.value.trim();
-      const text = `Olá, brnz! ${who ? `Meu negócio: ${who}. ` : ''}Preciso de ${what}. Pode me passar um orçamento?`;
-      preview.textContent = text;
-      send.href = `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
+      picked.forEach(box => {
+        const item = document.createElement('li'); const text = document.createElement('span'); text.textContent = box.dataset.label!;
+        const remove = document.createElement('button'); remove.type = 'button'; remove.dataset.removeService = box.value; remove.textContent = '×'; remove.setAttribute('aria-label', `Remover ${box.dataset.label}`);
+        item.append(text, remove); selected.append(item);
+      });
+      const lines = ['Olá, brnz! Quero montar um plano para minha marca.'];
+      if (picked.length) lines.push('', 'Serviços:', ...picked.map(box => `• ${box.dataset.label}`));
+      if (business.value.trim()) lines.push('', `Meu negócio: ${business.value.trim()}`);
+      if (goal.value.trim()) lines.push('', `Sobre o projeto: ${goal.value.trim()}`);
+      lines.push('', picked.length ? 'Podem me passar escopo, prazo e orçamento?' : 'Podem me ajudar a escolher os serviços?');
+      const message = lines.join('\n'); preview.textContent = message;
+      send.href = `https://wa.me/${root.dataset.number}?text=${encodeURIComponent(message)}`;
+      sendLabel.textContent = picked.length ? 'Pedir orçamento' : 'Me ajude a escolher';
+      send.setAttribute('aria-label', picked.length ? 'Pedir orçamento pelo WhatsApp' : 'Pedir ajuda para escolher serviços pelo WhatsApp');
+      updateDock();
     };
-    boxes.forEach((b) => b.addEventListener('change', update));
-    business.addEventListener('input', update);
+    boxes.forEach(box => box.addEventListener('change', update));
+    business.addEventListener('input', update); goal.addEventListener('input', update);
+    selected.addEventListener('click', event => {
+      const button = (event.target as Element).closest<HTMLButtonElement>('[data-remove-service]');
+      if (!button) return;
+      const box = boxes.find(item => item.value === button.dataset.removeService)!; box.checked = false;
+      const keyboard = button.matches(':focus-visible'); update();
+      if (keyboard) (selected.querySelector<HTMLButtonElement>('button') ?? send).focus({ preventScroll: true });
+    });
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.target === summary) summaryVisible = entry.isIntersecting && entry.intersectionRatio >= 0.2; else choicesVisible = entry.isIntersecting; });
+      updateDock();
+    }, { threshold: [0, 0.2] });
+    observer.observe(root.querySelector('.choices')!); observer.observe(summary);
+    mobile.addEventListener('change', updateDock);
+    if (import.meta.hot) import.meta.hot.dispose(() => { observer.disconnect(); mobile.removeEventListener('change', updateDock); });
     update();
   });
 </script>

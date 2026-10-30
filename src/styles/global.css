@@ -1,4 +1,5 @@
 @import '@fontsource-variable/inter-tight';
+@import './cta.css';
 
 /* Sans Sara (S. John Ross / Cumberland Fontworks): a fonte da marca escolhida pelo Arthur.
    Licença gratuita só para uso pessoal; o uso no site depende da licença comercial do autor. */
@@ -238,7 +239,6 @@ html:not([data-motion='on']).motion-ready [data-reveal], html:not([data-motion='
 @supports (animation-timeline: view()) {
   @media (min-width: 0px) {
     .hero .stage, .hero .opening { animation: hero-out linear both; animation-timeline: scroll(root); animation-range: 0 90svh; }
-    main > section, body > footer { animation: sector-in linear both; animation-timeline: view(); animation-range: entry 0% entry 45%; }
   }
 }
 @keyframes hero-out { to { opacity: 0; transform: translateY(-14vh) scale(0.9); filter: blur(8px); } }
