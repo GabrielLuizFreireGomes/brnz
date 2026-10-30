@@ -1,0 +1,6 @@
+{
+  "appId": "br.com.brnz.app",
+  "appName": "brnz",
+  "webDir": "dist",
+  "android": { "backgroundColor": "#07080f" }
+}

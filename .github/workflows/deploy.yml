@@ -19,9 +19,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: withastro/action@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            app/package-lock.json
+      # Site
+      - run: npm ci
+      - run: npm run build
+      # App (PWA) em /app
+      - run: npm ci
+        working-directory: app
+      - run: npm run build
+        working-directory: app
+      - run: cp -r app/dist dist/app
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
   deploy:
     needs: build
     runs-on: ubuntu-latest
