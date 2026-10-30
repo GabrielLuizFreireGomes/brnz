@@ -59,7 +59,7 @@ export const suporte: Screen = {
   sub: (c) => (c.staff ? 'Uma conversa por cliente' : 'Fale com Arthur, Gabriel e o time de captação'),
   view: (c) => {
     if (!c.staff) return html`<div class="chat">${thread(c, c.client.id)}</div>`;
-    const open = c.param;
+    const open = db().clients.some((cl) => cl.id === c.param) ? c.param : undefined;
     return html`
     <div class="chat chat--staff ${open ? 'has-open' : ''}">
       <div class="chat-list">${inbox(c, open)}</div>
@@ -73,7 +73,7 @@ export const suporte: Screen = {
     const clientId = c.staff ? c.param : c.client.id;
     const t = root.querySelector<HTMLElement>('[data-thread]');
     if (t) t.scrollTop = t.scrollHeight;
-    if (clientId) setTimeout(() => markRead(clientId, c.staff), 600);
+    const readTimer = clientId ? setTimeout(() => markRead(clientId, c.staff), 600) : undefined;
 
     on(root, 'click', '[data-thread-open]', (el) => { setScope(el.dataset.threadOpen!); go('suporte', el.dataset.threadOpen!); });
 
@@ -92,12 +92,14 @@ export const suporte: Screen = {
       if (!text || !clientId) return;
       box!.value = '';
       send(clientId, c.user.id, text);
-      root.querySelector<HTMLTextAreaElement>('textarea')?.focus();
+      document.querySelector<HTMLTextAreaElement>('[data-composer] textarea')?.focus();
     });
     on(root, 'change', '[data-attach]', async (el) => {
       const file = (el as HTMLInputElement).files?.[0];
       if (!file || !clientId) return;
-      send(clientId, c.user.id, '', await readImage(file, 900));
+      try { send(clientId, c.user.id, '', await readImage(file, 900)); }
+      catch (error) { c.toast((error as Error).message); }
     });
+    return () => clearTimeout(readTimer);
   },
 };

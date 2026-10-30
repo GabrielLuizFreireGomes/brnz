@@ -1,10 +1,10 @@
 import { html, on } from '../core/dom';
-import { planName, roleLabel } from '../core/access';
+import { roleLabel } from '../core/access';
 import { signIn } from '../core/session';
 import { go } from '../core/router';
 import { clientById, db } from '../data/db';
 import type { Screen } from '../core/screen';
-import { logo } from '../ui/icons';
+import { logo, icon } from '../ui/icons';
 import { avatar } from '../ui/parts';
 
 const enter = (userId: string) => {
@@ -23,29 +23,30 @@ export const login: Screen = {
     <div class="login">
       <section class="login-intro">
         ${logo('login-logo')}
-        <h1 class="brand-type">Tudo da sua marca, num lugar só.</h1>
-        <p>Aprove posts, acompanhe o site, veja como você aparece no Google e fale com o time, sem procurar nada no WhatsApp.</p>
+        <div class="login-art" aria-hidden="true"><span class="login-art-line"></span><span class="login-art-circle"></span><span class="login-art-square"></span><span class="login-art-note">Ideias que<br>ganham forma.</span></div>
+        <div class="login-statement"><h1>Um espaço.<br>Todas as conexões.</h1><p>Seu estúdio, seus projetos e as pessoas que fazem acontecer.</p></div>
+        <div class="login-intro-footer"><span>BRNZ Studio</span><span>Design + tecnologia</span></div>
       </section>
 
       <section class="login-card" aria-labelledby="login-title">
-        <h2 id="login-title">Entrar</h2>
+        <div class="login-card-heading"><p class="login-overline">Seu workspace</p><h2 id="login-title">Bom ter você aqui.</h2></div>
         <form class="form" data-login novalidate>
           <label class="field">
             <span>E-mail</span>
             <input type="email" name="email" autocomplete="email" inputmode="email" placeholder="voce@suaempresa.com.br" required spellcheck="false" />
           </label>
           <p class="field-error" data-error hidden></p>
-          <button class="btn btn--block" type="submit">Continuar</button>
+          <button class="btn btn--block" type="submit">Entrar no workspace${icon('arrow')}</button>
         </form>
 
         <div class="demo">
           <p class="demo-title">Perfis de teste</p>
-          <p class="demo-note">Enquanto o login de verdade não existe, entre como qualquer perfil. Cada um vê só as telas do seu papel e do seu plano.</p>
+          <p class="demo-note">Escolha um perfil para conhecer o workspace.</p>
           <ul class="list">
             ${[...staff, ...clients].map((u) => html`
               <li><button type="button" class="row row--btn" data-as="${u.id}">
                 ${avatar(u.id)}
-                <span class="row-main"><strong>${u.name}</strong><small>${u.role === 'cliente' ? `${clientById(u.clientId)?.name} · plano ${planName(clientById(u.clientId)!.plan)}` : roleLabel[u.role]}</small></span>
+                <span class="row-main"><strong>${u.name}</strong><small>${u.role === 'cliente' ? `${clientById(u.clientId)?.name}` : roleLabel[u.role]}</small></span>${icon('arrow')}
               </button></li>`)}
           </ul>
         </div>

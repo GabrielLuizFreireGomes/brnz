@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="900" viewBox="0 0 720 900">
+<rect width="720" height="900" fill="#efe5d2"/>
+<path d="M36 113h648M36 810h648" stroke="#8d7a60" stroke-width="1"/>
+<text x="42" y="74" fill="#3f392b" font-family="Georgia,serif" font-size="37">Dona Lu</text>
+<text x="680" y="71" text-anchor="end" fill="#665b47" font-family="Arial,sans-serif" font-size="15">Padaria artesanal</text>
+<text x="45" y="207" fill="#443b28" font-family="Georgia,serif" font-size="62">O tempo é</text>
+<text x="45" y="277" fill="#443b28" font-family="Georgia,serif" font-size="62">nosso ingrediente.</text>
+<text x="48" y="329" fill="#6c5e47" font-family="Arial,sans-serif" font-size="21">48 horas de fermentação natural.</text>
+<ellipse cx="365" cy="707" rx="228" ry="22" fill="#ddcfb7"/>
+<g transform="rotate(-14 355 540)">
+<path d="M141 591c0-140 101-217 216-217 125 0 230 91 230 217 0 81-87 112-225 112-130 0-221-34-221-112Z" fill="#b8763b"/>
+<path d="M160 585c0-122 87-189 197-189 118 0 208 77 208 189 0 62-82 93-204 93-115 0-201-32-201-93Z" fill="#c99351"/>
+<path d="M222 467c57 15 88 51 99 104M291 421c57 15 95 56 110 116M374 421c60 14 103 55 119 113" fill="none" stroke="#f0d6a6" stroke-width="22" stroke-linecap="round"/>
+<path d="M222 469c49 18 76 48 89 91M292 423c53 18 86 53 100 101M375 423c54 17 89 51 104 98" fill="none" stroke="#a96935" stroke-width="5" stroke-linecap="round"/>
+</g>
+<text x="45" y="862" fill="#4f4737" font-family="Arial,sans-serif" font-size="18">Feito com calma. Servido com carinho.</text>
+<text x="680" y="862" text-anchor="end" fill="#7d6c54" font-family="Arial,sans-serif" font-size="15">Dona Lu • Taubaté</text>
+</svg>

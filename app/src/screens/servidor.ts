@@ -1,6 +1,7 @@
-import { html } from '../core/dom';
+import { html, on } from '../core/dom';
 import { relDay, two, when } from '../core/format';
-import { db } from '../data/db';
+import { db, mutate, nowIso, uid } from '../data/db';
+import { authorize } from '../data/workflows';
 import type { Screen } from '../core/screen';
 import { dayLabels, line, meter } from '../ui/chart';
 import { empty, pill, sectionHead } from '../ui/parts';
@@ -18,10 +19,12 @@ export const servidor: Screen = {
     const sslDays = Math.round((Date.parse(s.sslUntil) - Date.now()) / 86_400_000);
 
     return html`
+    <div class="toolbar"><p class="status-line"><i></i>Ambiente operacional <span class="muted small">· simulação</span></p><div class="toolbar-actions"><button class="btn btn--ghost btn--sm" data-health>Verificar saúde</button>${c.staff ? html`<button class="btn btn--ghost btn--sm" data-cache>Simular limpeza de cache</button>` : ''}</div></div>
+    <p class="notice" data-health-result hidden role="status"></p>
     <dl class="kpis">
       <div><dt>No ar, 30 dias</dt><dd class="fig">${two(s.uptime30)}%</dd><small>${Math.round((100 - s.uptime30) * 432)} min fora</small></div>
       <div><dt>Resposta média</dt><dd class="fig">${s.avgMs} ms</dd><small>abaixo de 300 ms é rápido</small></div>
-      <div><dt>Certificado SSL</dt><dd class="fig ${sslDays < 15 ? 'warn-text' : ''}">${sslDays} dias</dd><small>renova sozinho</small></div>
+      <div><dt>Certificado SSL</dt><dd class="fig ${sslDays < 15 ? 'warn-text' : ''}">${sslDays} dias</dd><small>validade simulada</small></div>
     </dl>
 
     <div class="cols">
@@ -38,12 +41,16 @@ export const servidor: Screen = {
 
     <section class="block">
       ${sectionHead('Publicações')}
-      <ul class="list list--rows">${s.deploys.map((d) => html`
+      <ul class="list list--rows">${[...s.deploys].sort((a, b) => b.at.localeCompare(a.at)).map((d) => html`
         <li class="row row--static">
           <code class="ref">${d.ref}</code>
           <span class="row-main"><strong>${d.text}</strong><small>${when(d.at)}</small></span>
           ${d.ok ? pill('Publicado', 'ok') : pill('Falhou', 'bad')}
         </li>`)}</ul>
     </section>`;
+  },
+  mount: (root, c) => {
+    on(root, 'click', '[data-health]', () => { authorize(c.client.id, 'servidor'); const result = root.querySelector<HTMLElement>('[data-health-result]')!; result.hidden = false; result.textContent = `Verificação simulada às ${new Date().toLocaleTimeString('pt-BR')}: HTTP 200 · DNS disponível · SSL válido. Nenhuma requisição foi enviada ao servidor.`; });
+    on(root, 'click', '[data-cache]', () => { authorize(c.client.id, 'servidor', true); mutate((d) => { const server = d.servers.find((s) => s.clientId === c.client.id)!; server.deploys.unshift({ at: nowIso(), ref: uid().slice(0, 7), text: 'Simulação de limpeza de cache concluída', ok: true }); }); c.toast('Limpeza simulada registrada no histórico.'); });
   },
 };

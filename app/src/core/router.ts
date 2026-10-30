@@ -3,7 +3,8 @@ export type Route = { name: string; param?: string };
 
 export function current(): Route {
   const [name = '', param] = location.hash.replace(/^#\/?/, '').split('/');
-  return { name: name || 'inicio', param: param ? decodeURIComponent(param) : undefined };
+  try { return { name: name || 'inicio', param: param ? decodeURIComponent(param) : undefined }; }
+  catch { return { name: 'inicio' }; }
 }
 
 export const go = (name: string, param?: string) => {

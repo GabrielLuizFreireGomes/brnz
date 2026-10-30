@@ -3,10 +3,16 @@ name: Deploy
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'app/**'
+      - '.github/workflows/workspace-pages.yml'
+      - '.github/workflows/deploy.yml'
+      - '.github/scripts/pages_artifact.py'
   workflow_dispatch:
 
 permissions:
   contents: read
+  actions: read
   pages: write
   id-token: write
 
@@ -23,21 +29,18 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: |
-            package-lock.json
-            app/package-lock.json
+          cache-dependency-path: package-lock.json
       # Site
       - run: npm ci
       - run: npm run build
-      # App (PWA) em /app
-      - run: npm ci
-        working-directory: app
-      - run: npm run build
-        working-directory: app
-      - run: cp -r app/dist dist/app
+      - name: Preserve the published workspace
+        run: python3 .github/scripts/pages_artifact.py landing
+        env:
+          GH_TOKEN: ${{ github.token }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
+          retention-days: 90
   deploy:
     needs: build
     runs-on: ubuntu-latest

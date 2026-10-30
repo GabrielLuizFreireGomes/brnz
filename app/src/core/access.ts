@@ -63,13 +63,16 @@ const MATRIX_KEY = 'brnz:matrix';
 export function loadMatrix(): PlanMatrix {
   try {
     const raw = localStorage.getItem(MATRIX_KEY);
-    if (raw) return { ...defaultMatrix, ...JSON.parse(raw) };
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return Object.fromEntries(plans.map((p) => [p.id, Array.isArray(parsed[p.id]) ? parsed[p.id].filter((id: unknown) => planModules.some((m) => m.id === id)) : defaultMatrix[p.id]])) as PlanMatrix;
+    }
   } catch {}
   return structuredClone(defaultMatrix);
 }
 
 export function saveMatrix(m: PlanMatrix) {
-  try { localStorage.setItem(MATRIX_KEY, JSON.stringify(m)); } catch {}
+  try { localStorage.setItem(MATRIX_KEY, JSON.stringify(m)); } catch { throw new Error('Não foi possível salvar os acessos neste navegador.'); }
 }
 
 export function resetMatrix() {

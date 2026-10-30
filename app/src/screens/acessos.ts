@@ -15,7 +15,7 @@ export const acessos: Screen = {
     return html`
     <section class="block">
       ${sectionHead('Telas por plano', html`<button class="btn btn--ghost btn--sm" type="button" data-reset>Voltar ao padrão</button>`)}
-      <p class="muted small">Vale para os clientes e para a equipe quando estiver vendo aquele cliente. Muda na hora em todos os aparelhos conectados.</p>
+      <p class="muted small">Vale para os clientes e para a equipe no cliente em foco. Nesta demonstração, sincroniza entre abas deste navegador.</p>
       <div class="table-scroll">
         <table class="table matrix">
           <thead><tr><th scope="col">Tela</th>${plans.map((p) => html`<th scope="col" class="center">${p.name}<small class="cell-sub">${count(p.id)} cliente${count(p.id) === 1 ? '' : 's'}</small></th>`)}</tr></thead>
@@ -29,7 +29,7 @@ export const acessos: Screen = {
 
     <section class="block">
       ${sectionHead('Telas por papel')}
-      <p class="muted small">Fixo no código (src/core/access.ts). Início, Conversa e Conta aparecem para todos.</p>
+      <p class="muted small">Cada pessoa tem as ferramentas do seu papel. Início, Conversa e Conta aparecem para todos.</p>
       <div class="table-scroll">
         <table class="table matrix">
           <thead><tr><th scope="col">Tela</th>${roles.map((r) => html`<th scope="col" class="center">${roleLabel[r]}</th>`)}</tr></thead>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="900" viewBox="0 0 720 900">
+<rect width="720" height="900" fill="#dcebe7"/><path d="M40 115h640M40 810h640" stroke="#95b5aa"/>
+<text x="43" y="74" fill="#25564a" font-family="Arial,sans-serif" font-size="31" letter-spacing="-1">sorriso leve</text><text x="678" y="70" text-anchor="end" fill="#527b70" font-family="Arial,sans-serif" font-size="14">Odontologia</text>
+<text x="43" y="231" fill="#25564a" font-family="Georgia,serif" font-size="65">Seu sorriso,</text><text x="43" y="303" fill="#25564a" font-family="Georgia,serif" font-size="65">ainda mais leve.</text>
+<text x="46" y="356" fill="#527b70" font-family="Arial,sans-serif" font-size="22">Cuidado em cada detalhe.</text>
+<circle cx="360" cy="578" r="164" fill="#f4f8f4"/>
+<path d="M244 550c15 81 62 122 116 122s101-41 116-122" fill="none" stroke="#7aa695" stroke-width="17" stroke-linecap="round"/>
+<path d="m272 467 12 24m164-24-12 24" fill="none" stroke="#25564a" stroke-width="9" stroke-linecap="round"/>
+<text x="44" y="860" fill="#527b70" font-family="Arial,sans-serif" font-size="18">Saúde e confiança para sorrir.</text><text x="678" y="860" text-anchor="end" fill="#527b70" font-family="Arial,sans-serif" font-size="14">São José dos Campos</text>
+</svg>

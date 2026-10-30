@@ -3,7 +3,7 @@
 
 @font-face {
   font-family: 'Sans Sara';
-  src: url('../../../src/fonts/sans-sara.woff2') format('woff2');
+  src: url('../assets/fonts/sans-sara.woff2') format('woff2');
   font-weight: 400;
   font-display: swap;
 }

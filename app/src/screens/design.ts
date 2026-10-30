@@ -63,14 +63,15 @@ export const design: Screen = {
     const dlg = root.querySelector<HTMLDialogElement>('[data-request]');
     const open = () => dlg?.showModal();
     opener?.addEventListener('click', open);
-    dlg?.querySelector('form')?.addEventListener('submit', (e) => {
+    on<SubmitEvent>(root, 'submit', '[data-request-form]', (_, e) => {
       e.preventDefault();
       const fd = new FormData(e.target as HTMLFormElement);
+      if (!String(fd.get('title') ?? '').trim()) return;
+      dlg?.close();
       request({
         clientId: c.client.id, title: String(fd.get('title')).trim(), detail: String(fd.get('detail') ?? '').trim(),
         kind: fd.get('kind') as Request['kind'], due: new Date(`${fd.get('due')}T12:00`).toISOString(),
       }, c.user.id);
-      dlg.close();
       c.toast('Pedido enviado. O time responde pela conversa.');
     });
     const off = mountUpload(root, c, 'design', 'design');

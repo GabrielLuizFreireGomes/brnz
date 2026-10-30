@@ -6,12 +6,12 @@ const KEY = 'brnz:session';
 type SessionData = { userId: string; scope?: string };
 
 function read(): SessionData | null {
-  try { return JSON.parse(sessionStorage.getItem(KEY) || localStorage.getItem(KEY) || 'null'); } catch { return null; }
+  try { return JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch { return null; }
 }
 function write(s: SessionData | null) {
   try {
-    if (s) { sessionStorage.setItem(KEY, JSON.stringify(s)); localStorage.setItem(KEY, JSON.stringify(s)); }
-    else { sessionStorage.removeItem(KEY); localStorage.removeItem(KEY); }
+    if (s) sessionStorage.setItem(KEY, JSON.stringify(s));
+    else sessionStorage.removeItem(KEY);
   } catch {}
 }
 

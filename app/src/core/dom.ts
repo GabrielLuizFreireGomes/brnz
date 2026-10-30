@@ -26,9 +26,12 @@ export const $ = <T extends Element = HTMLElement>(sel: string, root: ParentNode
 export const $$ = <T extends Element = HTMLElement>(sel: string, root: ParentNode = document) => [...root.querySelectorAll<T>(sel)];
 
 /** Um listener delegado por evento e seletor, que sobrevive às trocas de innerHTML. */
-export function on<E extends Event = Event>(root: Element, type: string, sel: string, fn: (el: HTMLElement, e: E) => void) {
+export function on<E extends Event = Event>(root: Element, type: string, sel: string, fn: (el: HTMLElement, e: E) => void | Promise<void>) {
   root.addEventListener(type, (e) => {
     const el = (e.target as Element).closest<HTMLElement>(sel);
-    if (el && root.contains(el)) fn(el, e as E);
+    if (el && root.contains(el)) {
+      const report = (error: unknown) => window.dispatchEvent(new CustomEvent('brnz:error', { detail: error instanceof Error ? error.message : 'Não foi possível concluir. Tente novamente.' }));
+      try { Promise.resolve(fn(el, e as E)).catch(report); } catch (error) { report(error); }
+    }
   });
 }

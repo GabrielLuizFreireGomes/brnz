@@ -5,25 +5,26 @@
 import type { PlanId, Role } from '../core/access';
 
 export type Client = { id: string; name: string; segment: string; city: string; plan: PlanId; since: string; hue: number };
-export type User = { id: string; name: string; email: string; role: Role; clientId?: string; initials: string; title: string };
+export type UserPreferences = { theme: 'light' | 'dark' | 'system'; accent: 'indigo' | 'blue' | 'violet' | 'teal'; density: 'comfortable' | 'compact'; cover: 'mosaic' | 'aurora' | 'minimal'; avatarShape: 'rounded' | 'circle' };
+export type User = { id: string; name: string; email: string; role: Role; clientId?: string; initials: string; title: string; phone?: string; bio?: string; photo?: string; preferences?: Partial<UserPreferences>; notificationRead?: string[] };
 
 export type Stage = 'briefing' | 'criacao' | 'aprovacao' | 'ajuste' | 'aprovado' | 'publicado';
 export type PieceKind = 'post' | 'carrossel' | 'story' | 'reels' | 'logo' | 'banner' | 'cardapio' | 'identidade';
 export type Piece = {
   id: string; clientId: string; area: 'design' | 'post'; kind: PieceKind; title: string; stage: Stage;
-  due: string; updatedAt: string; by: string; image?: string; note?: string;
+  due: string; updatedAt: string; publishedAt?: string; by: string; image?: string; note?: string;
   metrics?: { alcance: number; curtidas: number; comentarios: number; salvos: number };
   log: { at: string; by: string; text: string }[];
 };
 export type Request = { id: string; clientId: string; title: string; detail: string; kind: PieceKind; due: string; status: 'novo' | 'andamento' | 'entregue'; createdAt: string; by: string };
-export type Site = { id: string; clientId: string; name: string; domain: string; status: 'no-ar' | 'desenvolvimento'; step: number; visits30: number; lastDeploy: string; stack: string };
+export type Site = { id: string; clientId: string; name: string; domain: string; status: 'no-ar' | 'desenvolvimento'; step: number; visits30: number; lastDeploy: string; stack: string; feedback?: string; approvedAt?: string };
 export type Server = {
   clientId: string; host: string; region: string; uptime30: number; avgMs: number; cpu: number; mem: number; disk: number;
   sslUntil: string; response: number[]; deploys: { at: string; ref: string; text: string; ok: boolean }[];
 };
 export type SeoSource = { clicks: number; impressions: number; ctr: number; position: number; series: number[] };
-export type Seo = { clientId: string; google: SeoSource; bing: SeoSource; queries: { q: string; clicks: number; impressions: number; position: number }[]; pages: { path: string; clicks: number }[] };
-export type Invoice = { id: string; clientId: string; ref: string; due: string; amount: number; status: 'paga' | 'aberta' | 'vencida' };
+export type Seo = { clientId: string; google: SeoSource; bing: SeoSource; queries: { q: string; clicks: number; impressions: number; position: number }[]; pages: { path: string; clicks: number }[]; bingQueries?: Seo['queries']; bingPages?: Seo['pages'] };
+export type Invoice = { id: string; clientId: string; ref: string; due: string; amount: number; status: 'paga' | 'aberta' | 'vencida'; paidAt?: string };
 export type Message = { id: string; clientId: string; from: string; text: string; at: string; read: boolean; image?: string };
 
 export type Db = {
@@ -45,8 +46,8 @@ const series = (n: number, base: number, grow: number, wobble: number, seed: num
   Array.from({ length: n }, (_, i) => Math.max(0, Math.round(base + grow * i + wobble * Math.sin(i * 1.7 + seed) + wobble * 0.5 * Math.cos(i * 0.6 + seed * 2))));
 
 const work = {
-  posts: new URL('../../../public/work/story-criacao-de-posts.jpg', import.meta.url).href,
-  identidade: new URL('../../../public/work/story-identidade-visual.jpg', import.meta.url).href,
+  posts: new URL('../assets/work/story-criacao-de-posts.jpg', import.meta.url).href,
+  identidade: new URL('../assets/work/story-identidade-visual.jpg', import.meta.url).href,
 };
 
 function seed(): Db {
@@ -69,7 +70,7 @@ function seed(): Db {
 
   let n = 0;
   const piece = (p: Omit<Piece, 'id' | 'log' | 'updatedAt'> & { updatedAt?: string }): Piece => ({
-    id: `p${++n}`, updatedAt: p.updatedAt ?? at(-1), log: [{ at: p.updatedAt ?? at(-1), by: p.by, text: 'Peça criada' }], ...p,
+    id: `p${++n}`, updatedAt: p.updatedAt ?? at(-1), publishedAt: p.stage === 'publicado' ? p.updatedAt ?? at(-1) : undefined, log: [{ at: p.updatedAt ?? at(-1), by: p.by, text: 'Peça criada' }], ...p,
   });
 
   const pieces: Piece[] = [
@@ -176,7 +177,7 @@ function seed(): Db {
 
 let cache: Db | null = null;
 const channel = 'BroadcastChannel' in window ? new BroadcastChannel('brnz') : null;
-const listeners = new Set<() => void>();
+const listeners = new Set<(external?: boolean) => void>();
 
 export function db(): Db {
   if (cache) return cache;
@@ -188,30 +189,32 @@ export function db(): Db {
     }
   } catch {}
   cache = seed();
-  persist(false);
+  try { persist(false); } catch { /* Ainda é possível explorar sem armazenamento. */ }
   return cache;
 }
 
 function persist(broadcast = true) {
-  try { localStorage.setItem(KEY, JSON.stringify(cache)); } catch {}
+  try { localStorage.setItem(KEY, JSON.stringify(cache)); }
+  catch { throw new Error('Não foi possível salvar. O armazenamento do navegador pode estar cheio. Remova anexos ou exporte seus dados na Conta.'); }
   if (broadcast) channel?.postMessage('change');
 }
 
 /** Muda os dados e avisa as outras abas e telas abertas. */
 export function mutate(fn: (d: Db) => void) {
-  fn(db());
-  persist();
+  const previous = structuredClone(db());
+  try { fn(db()); persist(); }
+  catch (error) { cache = previous; throw error; }
   listeners.forEach((l) => l());
 }
 
-export function onChange(fn: () => void) {
+export function onChange(fn: (external?: boolean) => void) {
   listeners.add(fn);
   return () => listeners.delete(fn);
 }
 
 function reloadFromOutside() {
   cache = null;
-  listeners.forEach((l) => l());
+  listeners.forEach((l) => l(true));
 }
 channel?.addEventListener('message', reloadFromOutside);
 window.addEventListener('storage', (e) => { if (e.key === KEY || e.key === 'brnz:matrix') reloadFromOutside(); });
